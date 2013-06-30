@@ -23,4 +23,8 @@ Paul Wessel, July 1, 2013
    and run cmake (see README.CMake for how).
 8. Make your shared library with make -j<N> and make -j<N> install,
    where <N> is how many cores you want to use in the building.
+9. Use gmt.conf's GMT_CUSTOM_LIBS parameter to specify your shared
+   library.
+10. Try it out to see if your modules are listed:
 
+	gmt --help
