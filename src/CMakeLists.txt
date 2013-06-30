@@ -50,7 +50,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
 # Modules in this custom library:
-set (CUSTOM_PROGS_SRCS gmtaverage.c gmtmercmap.c)
+set (CUSTOM_PROGS_SRCS gmtaverage.c gmtmercmap.c gmtparser.c grdfourier.c)
 
 # Support code for the modules:
 set (CUSTOM_LIB_SRCS gmt_custom_module.h gmt_custom_module.c)
@@ -107,12 +107,12 @@ create_debug_sym (${CUSTOM_LIBS} ${CUSTOM_PROGS})
 
 # temporary hack
 if (NOT CUSTOM_INSTALL_MONOLITHIC)
-	set (CUSTOM_MAIN_NAME gmt${CUSTOM_INSTALL_NAME_SUFFIX})
+	set (CUSTOM_MAIN_NAME custom${CUSTOM_INSTALL_NAME_SUFFIX})
 else (NOT CUSTOM_INSTALL_MONOLITHIC)
-	set (CUSTOM_MAIN_NAME gmt)
+	set (CUSTOM_MAIN_NAME custom)
 endif (NOT CUSTOM_INSTALL_MONOLITHIC)
 
-# Rename gmt target on non-monolithic installs to prevent version clash
+# Rename custom target on non-monolithic installs to prevent version clash
 if (NOT CUSTOM_INSTALL_MONOLITHIC)
 	set_target_properties (customlib
 		PROPERTIES
@@ -166,7 +166,6 @@ if (UNIX AND NOT CUSTOM_INSTALL_MONOLITHIC)
 		COMMAND ${CMAKE_COMMAND} -E create_symlink
 		${_rpath_share} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CUSTOM_LIBDIR}/../share
 		COMMAND ${CMAKE_COMMAND} -E create_symlink
-		${_rpath_man} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CUSTOM_LIBDIR}/../man)
 	")
 endif (UNIX AND NOT CUSTOM_INSTALL_MONOLITHIC)
 

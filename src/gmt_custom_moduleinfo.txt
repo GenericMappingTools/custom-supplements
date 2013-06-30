@@ -9,3 +9,5 @@
 #
 gmtaverage	custom	Block average (x,y,z) data tables by mean, median, or mode estimation
 gmtmercmap	custom	Make a Mercator color map from ETOPO[1|2|5] global relief grids
+grdparser	custom	Demonstrate parsing of input data, defaults, and options
+grdfourier	custom	Create a grid, add a spike, filter it in frequency domain, and write output
