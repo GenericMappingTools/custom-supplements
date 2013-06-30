@@ -1,0 +1,25 @@
+#	$Id$
+
+This README file explains the various steps you must take to design
+and successfully build a custom shared library that can be accessed
+via the gmt executable, just like the standard and supplemental
+GMT modules.
+
+Paul Wessel, July 1, 2013
+
+1. Decide what your shared library name should be.  This is a short
+   name that will become part of the library name, e.g., "custom".
+   Below, we will refer to this name as TAG.
+2. You must code up your module.  There are some examples of fully
+   working modules in src.  Base your code on those templates.
+   Set the THIS_MODULE_LIB parameter in your code to TAG.
+3. Add you module's filename.c to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
+4. Based on gmt_custom_moduleinfo.txt, make your own gmt_TAG_moduleinfo.txt
+   and edit its contents.  One line for each module.
+5. Create required source code automatically by running the script
+   	gmt_make_module_src.sh TAG
+6. Create a build directory in the top level directory, cd into build,
+   and run cmake (see README.CMake for how).
+7. Make your shared library with make -j<N> and make -j<N> install,
+   where <N> is how many cores you want to use in the building.
+

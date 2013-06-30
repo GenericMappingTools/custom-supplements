@@ -1,0 +1,11 @@
+# $Id$
+#
+# Edit this file after adding a new custom GMT module and then run
+#	gmt_make_module_src.sh custom
+# to generate gmt_custom_module.h and gmt_custom_module.c.
+# NOTE: Only ONE TAB between items, and no space after = !
+#
+# LIB_STRING	="GMT custom: Some custom plugins for the Generic Mapping Tools"
+#
+gmtaverage	custom	Block average (x,y,z) data tables by mean, median, or mode estimation
+gmtmercmap	custom	Make a Mercator color map from ETOPO[1|2|5] global relief grids

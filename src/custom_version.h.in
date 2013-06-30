@@ -1,0 +1,61 @@
+/*
+ * $Id: gmt_version.h.in 10866 2013-02-03 07:51:01Z pwessel $
+ *
+ *  Copyright (c) 1991-2013 by P. Wessel, W. H. F. Smith, R. Scharroo,
+ *  F. Wobbe, and J. Luis
+ *
+ * See LICENSE.TXT file for copying and redistribution conditions.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; version 3 or any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * Contact info: gmt.soest.hawaii.edu
+ */
+
+#pragma once
+#ifndef CUSTOM_VERSION_H_
+#define CUSTOM_VERSION_H_
+
+/* for manpages only */
+#define MANDATE "@DAY@ @MONTHNAME@ @YEAR@"
+
+#define CUSTOM_MAJOR_VERSION @CUSTOM_PACKAGE_VERSION_MAJOR@
+#define CUSTOM_MINOR_VERSION @CUSTOM_PACKAGE_VERSION_MINOR@
+#define CUSTOM_RELEASE_VERSION @CUSTOM_PACKAGE_VERSION_PATCH@
+#define CUSTOM_VERSION_YEAR @CUSTOM_VERSION_YEAR@
+
+#cmakedefine CUSTOM_SOURCE_CODE_CONTROL_VERSION_STRING "@CUSTOM_SOURCE_CODE_CONTROL_VERSION_STRING@"
+#ifdef CUSTOM_SOURCE_CODE_CONTROL_VERSION_STRING
+#	define CUSTOM_STRING "@CUSTOM_PACKAGE_VERSION_WITH_SVN_REVISION@ (r@CUSTOM_SOURCE_CODE_CONTROL_VERSION_STRING@)"
+#else /* if HAVE_SVN_VERSION or if unversioned */
+#	define CUSTOM_STRING "@CUSTOM_PACKAGE_VERSION_WITH_SVN_REVISION@"
+#endif
+
+#ifdef __x86_64__
+#	define CUSTOM_VER_64 " [64-bit]"
+#else
+#	define CUSTOM_VER_64 ""
+#endif
+
+#ifdef _OPENMP /* Open MP Parallelization is on */
+#	define CUSTOM_MP " [MP]"
+#else
+#	define CUSTOM_MP ""
+#endif
+
+#define CUSTOM_VERSION CUSTOM_version()
+static inline char *CUSTOM_version () {
+	/* final string returned by CUSTOM_version() */
+	static char version[] = CUSTOM_STRING CUSTOM_VER_64 CUSTOM_MP;
+	return version;
+}
+
+#endif /* !CUSTOM_VERSION_H_ */
+
+/* vim: set ft=c: */
