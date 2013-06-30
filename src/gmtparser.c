@@ -44,7 +44,13 @@ int GMT_gmtparser_usage (void *API, int level)
 	GMT_Message (API, GMT_TIME_NONE, "\t  2. You will be asked to enter names of GMT default parameter\n");
 	GMT_Message (API, GMT_TIME_NONE, "\t  3. In this section the program will report which common options were set and report values.\n");
 	GMT_Message (API, GMT_TIME_NONE, "\tThe first to section ends when you enter your answer as -\n");
-	GMT_Message (API, GMT_TIME_NONE, "\ttgmtparser also demonstrates reporting elapsed time\n");
+	GMT_Message (API, GMT_TIME_NONE, "\tgmtparser also demonstrates reporting elapsed time\n");
+	GMT_Message (API, GMT_TIME_NONE, "\tCoordinates will be return in decimal degrees (if geographic) or decimal Cartesian units.\n");
+	GMT_Message (API, GMT_TIME_NONE, "\tDimensions (given in inch, cm, point) will be returned in current unit.\n");
+	GMT_Message (API, GMT_TIME_NONE, "\t  These answer thus depends on your choice of PROJ_LENGTH_UNIT [cm].\n");
+	GMT_Message (API, GMT_TIME_NONE, "\tLengths (given in feet, survey feet, meter, km, miles, nautical miles) will be returned in meters.\n");
+	GMT_Message (API, GMT_TIME_NONE, "\tIn section 1, ret = ?? gives the number of parsed arguments.\n");
+	GMT_Message (API, GMT_TIME_NONE, "\tIn section 3, ret = ?? gives the number of values returned for this common options.\n");
 
 	return (EXIT_FAILURE);
 }
@@ -53,11 +59,13 @@ void report (char *name, int count, double par[])
 {
 	int k;
 	fprintf (stderr, "Got %s: ret = %d", name, count);
+	if (count) fprintf (stderr, "\tValues:");
 	for (k = 0; k < count; k++) fprintf (stderr, "\t%.12g", par[k]);
 	fprintf (stderr, "\n");
 }
 
-#define Return(code) {GMT_Destroy_Options (API, &options); GMT_Destroy_Session (API); return (code);}
+#define Free_Options {if (GMT_Destroy_Options (API, &options) != GMT_NOERROR) return (EXIT_FAILURE);}
+#define Return(code) {Free_Options; return (code);}
 
 int GMT_gmtparser (void *API, int mode, void *args)
 {

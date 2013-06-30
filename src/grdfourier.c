@@ -176,7 +176,8 @@ int GMT_grdfourier_parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GM
 }
 
 /* Convenience macros to free memory before exiting due to error or completion */
-#define bailout(code) {GMT_Destroy_Options (API, &options); GMT_Destroy_Session (API); return (code);}
+#define Free_Options {if (GMT_Destroy_Options (API, &options) != GMT_NOERROR) return (EXIT_FAILURE);}
+#define bailout(code) {Free_Options; return (code);}
 #define Return(code) {Free_grdfourier_Ctrl (API, Ctrl); bailout (code);}
 
 int GMT_grdfourier (void *API, int mode, void *args)
