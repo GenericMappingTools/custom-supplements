@@ -18,7 +18,7 @@
 /*
  * Program to demonstrate use of GMT API to call one of the three spatial
  * data averageing modules GMT_blockmean|median|mode.
- *
+ *GMTAVERAGE
  * Author:	Paul Wessel
  * Date:	1-JAN-2013
  * Version:	5 API
@@ -37,11 +37,9 @@
 #include "custom_version.h"	/* Must include this to use Custom_version */
 #include <string.h>
 
-EXTERN_MSC void GMT_show_name_and_purpose (void *API, const char *name, const char *component, const char *purpose);
-
 #define GMT_PROG_OPTIONS "-:>RVabfghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
 
-struct PROG_CTRL {	/* All local control options for this program (except common args) */
+struct GMTAVERAGE_CTRL {	/* All local control options for this program (except common args) */
 	struct E {	/* -E[b] */
 		unsigned int active;
 		unsigned int mode;
@@ -54,15 +52,15 @@ struct PROG_CTRL {	/* All local control options for this program (except common 
 };
 
 void * New_gmtaverage_Ctrl () {	/* Allocate and initialize a new control structure */
-	struct PROG_CTRL *C;
+	struct GMTAVERAGE_CTRL *C;
 	
-	C = calloc (1, sizeof (struct PROG_CTRL));
+	C = calloc (1, sizeof (struct GMTAVERAGE_CTRL));
 	
 	/* Initialize values whose defaults are not 0/false/NULL */
 	return (C);
 }
 
-void Free_gmtaverage_Ctrl (struct PROG_CTRL *C) {	/* Deallocate control structure */
+void Free_gmtaverage_Ctrl (struct GMTAVERAGE_CTRL *C) {	/* Deallocate control structure */
 	free ((void *)C);	
 }
 
@@ -107,7 +105,7 @@ int GMT_gmtaverage_usage (void *API, int level)
 	return (EXIT_FAILURE);
 }
 
-int GMT_gmtaverage_parse (void *API, struct PROG_CTRL *Ctrl, struct GMT_OPTION *options)
+int GMT_gmtaverage_parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OPTION *options)
 {
 	/* This parses the options provided to gmtaverage and sets parameters in CTRL.
 	 * Any GMT common options will override values set previously by other commands.
@@ -187,7 +185,7 @@ int GMT_gmtaverage (void *API, int mode, void *args)
 	int error = 0;
 	char *module = NULL;
 	struct GMT_OPTION *options = NULL, *t_ptr = NULL;
-	struct PROG_CTRL *Ctrl = NULL;
+	struct GMTAVERAGE_CTRL *Ctrl = NULL;
 
 	/*---------------------------- This is the gmtaverage main code ----------------------------*/
 
