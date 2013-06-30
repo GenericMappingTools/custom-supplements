@@ -18,8 +18,9 @@ Paul Wessel, July 1, 2013
    and edit its contents.  One line for each module.
 5. Create required source code automatically by running the script
    	gmt_make_module_src.sh TAG
-6. Create a build directory in the top level directory, cd into build,
+6. In cmake, make a ConfigUser.cmake from the template, make any edits.
+7. Create a build directory in the top level directory, cd into build,
    and run cmake (see README.CMake for how).
-7. Make your shared library with make -j<N> and make -j<N> install,
+8. Make your shared library with make -j<N> and make -j<N> install,
    where <N> is how many cores you want to use in the building.
 
