@@ -27,7 +27,7 @@
 
 #define THIS_MODULE_NAME	"gmtmercmap"
 #define THIS_MODULE_LIB		"custom"
-#define THIS_MODULE_PURPOSE	"Make a Mercator color map from ETOPO[1|2|5] global relief grids"
+#define THIS_MODULE_PURPOSE	"Make a Mercator color map from ETOPO 1, 2, or 5 arc min global relief grids"
 
 #include "gmt.h"
 #include "custom_version.h"	/* Must include this to use Custom_version */

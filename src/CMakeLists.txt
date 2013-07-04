@@ -16,10 +16,16 @@
 # Contact info: gmt.soest.hawaii.edu
 #-------------------------------------------------------------------------------
 #
-# To modify the cmake process: Edit your cmake/ConfigUser.cmake file
+# 1. To modify the cmake process: Edit your cmake/ConfigUser.cmake file
+# 2. To add more modules: Edit CUSTOM_PROGS_SRCS below.
+
+# This is src/CMakeLists.txt
 #
-# src/CMakeLists.txt
-#
+
+# ==> Modules in this custom library [add the ones you have]:
+set (CUSTOM_PROGS_SRCS gmtaverage.c gmtmercmap.c gmtparser.c grdfourier.c)
+#=========================================================================
+# Most likely no changes below here
 
 include (ManageString)
 #include (GmtHelperMacros)
@@ -48,9 +54,6 @@ include_directories (${CUSTOM_SOURCE_DIR}/src)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 #include_directories (${PROJECT_BINARY_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
-
-# Modules in this custom library:
-set (CUSTOM_PROGS_SRCS gmtaverage.c gmtmercmap.c gmtparser.c grdfourier.c)
 
 # Support code for the modules:
 set (CUSTOM_LIB_SRCS gmt_custom_module.h gmt_custom_module.c)

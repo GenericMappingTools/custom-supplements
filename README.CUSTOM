@@ -2,8 +2,9 @@
 
 This README file explains the various steps you must take to design
 and successfully build a custom shared library that can be accessed
-via the gmt executable, just like the standard and supplemental
-GMT modules.
+via the main gmt executable, just like the standard and supplemental
+GMT modules.  It is required that you have installed the GMT 5 with
+its include files and shared library before proceeding.
 
 Paul Wessel, July 1, 2013
 
@@ -15,7 +16,7 @@ Paul Wessel, July 1, 2013
    Set the THIS_MODULE_LIB parameter in your code to TAG.
 3. Add you module's filename.c to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
 4. Based on gmt_custom_moduleinfo.txt, make your own gmt_TAG_moduleinfo.txt
-   and edit its contents.  One line for each module.
+   and edit its contents.  One line for each shared library (usually one).
 5. Create required source code automatically by running the script
    	gmt_make_module_src.sh TAG
 6. In cmake, make a ConfigUser.cmake from the template, make any edits.
