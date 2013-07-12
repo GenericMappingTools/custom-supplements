@@ -22,7 +22,7 @@
 #
 #	mkdir build
 #	cd build
-#	cmake -DCMAKE_INSTALL_PREFIX=custom -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
+#	cmake [-DCMAKE_INSTALL_PREFIX=custom] [-DCMAKE_BUILD_TYPE=RelWithDebInfo] ..
 #
 # CMAKE_BUILD_TYPE can be: empty, Debug, Release, RelWithDebInfo or MinSizeRel
 #
@@ -58,42 +58,13 @@ include (ConfigCMake)
 
 # Find UNIX commands
 include (FindUnixCommands)
-find_program (SVN svn)
+#find_program (SVN svn)
 
 # Add subdirectories
 add_subdirectory (src)
 add_subdirectory (cmake/dist) # make distribution bundles (always last)
 get_property(GMT_CUSTOM_LIB_PATH TARGET customlib PROPERTY LOCATION)
 GET_FILENAME_COMPONENT (GMT_CUSTOM_LIB_NAME ${GMT_CUSTOM_LIB_PATH} NAME)
-
-# Source release target
-#if (SVN AND HAVE_SVN_VERSION)
-#	# Export svn working tree
-#	add_custom_target (svn_export_release
-#		COMMAND ${SVN} --force export
-#		${CUSTOM_SOURCE_DIR} ${CUSTOM_RELEASE_PREFIX})
-#	add_depend_to_target (custom_release svn_export_release)
-#	find_program (GNUTAR NAMES gnutar gtar tar)
-#	if (GNUTAR)
-#		# Targets for creating tarballs
-#		string (REGEX REPLACE ".*/" "" _release_dirname "${CUSTOM_RELEASE_PREFIX}")
-#		add_custom_command (OUTPUT ${_release_dirname}.tar.gz
-#			COMMAND ${GNUTAR} -cz --owner 0 --group 0 --mode a=rX,u=rwX
-#			-f ${CUSTOM_BINARY_DIR}/${_release_dirname}.tar.gz ${_release_dirname}
-#			DEPENDS ${CUSTOM_RELEASE_PREFIX}
-#			WORKING_DIRECTORY ${CUSTOM_RELEASE_PREFIX}/..
-#			VERBATIM)
-#		add_custom_command (OUTPUT ${_release_dirname}.tar.bz2
-#			COMMAND ${GNUTAR} -cj --owner 0 --group 0 --mode a=rX,u=rwX
-#			-f ${CUSTOM_BINARY_DIR}/${_release_dirname}.tar.bz2 ${_release_dirname}
-#			DEPENDS ${CUSTOM_RELEASE_PREFIX}
-#			WORKING_DIRECTORY ${CUSTOM_RELEASE_PREFIX}/..
-#			VERBATIM)
-#		add_custom_target (custom_release_tar
-#			DEPENDS ${CUSTOM_RELEASE_PREFIX}
-#			${_release_dirname}.tar.gz ${_release_dirname}.tar.bz2)
-#	endif (GNUTAR)
-#endif (SVN AND HAVE_SVN_VERSION)
 
 # Configuration done
 message(

@@ -28,7 +28,6 @@ set (CUSTOM_PROGS_SRCS gmtaverage.c gmtmercmap.c gmtparser.c grdfourier.c)
 # Most likely no changes below here
 
 include (ManageString)
-#include (GmtHelperMacros)
 
 # Include CREATE_DEBUG_SYM macro
 include (CreateDebugSym)
@@ -76,14 +75,11 @@ if (HAVE_M_LIBRARY)
 	target_link_libraries (customlib m)
 endif (HAVE_M_LIBRARY)
 
-# set the build version (VERSION) and the API version (SOVERSION)
 set_target_properties (customlib
 	PROPERTIES
 	OUTPUT_NAME gmtcustom
 	PREFIX "${LIB_PREFIX}"
 	IMPORT_PREFIX "${LIB_PREFIX}"
-	VERSION ${CUSTOM_PACKAGE_VERSION}
-	SOVERSION ${CUSTOM_PACKAGE_VERSION_MAJOR}
 	INSTALL_RPATH "${CMAKE_INSTALL_RPATH}"
 	LINK_FLAGS "${USER_CUSTOMLIB_LINK_FLAGS}"
 	DEFINE_SYMBOL "LIBRARY_EXPORTS")
@@ -93,16 +89,10 @@ if (WIN32 AND CUSTOM_CUSTOM_RENAME)
 	set_target_properties (customlib PROPERTIES RUNTIME_OUTPUT_NAME ${CUSTOM_CUSTOM_RENAME})
 endif ()
 
-# To expands the command line arguments in Windows, see:
-# http://msdn.microsoft.com/en-us/library/8bch7bkk.aspx
-if (MSVC)
-	set_target_properties(customlib PROPERTIES LINK_FLAGS "setargv.obj")
-endif(MSVC)
-
 configure_file (custom_version.h.in custom_version.h)
 
 # generate Mac debugging symbols
-create_debug_sym (${CUSTOM_LIBS} ${CUSTOM_PROGS})
+create_debug_sym (${CUSTOM_LIBS})
 
 # temporary hack
 if (NOT CUSTOM_INSTALL_MONOLITHIC)
@@ -111,15 +101,9 @@ else (NOT CUSTOM_INSTALL_MONOLITHIC)
 	set (CUSTOM_MAIN_NAME custom)
 endif (NOT CUSTOM_INSTALL_MONOLITHIC)
 
-# Rename custom target on non-monolithic installs to prevent version clash
-#if (NOT CUSTOM_INSTALL_MONOLITHIC)
-#	set_target_properties (customlib
-#		PROPERTIES
-#		OUTPUT_NAME ${CUSTOM_MAIN_NAME})
-#endif (NOT CUSTOM_INSTALL_MONOLITHIC)
 
 # add the install targets
-install (TARGETS ${CUSTOM_LIBS} ${CUSTOM_PROGS}
+install (TARGETS ${CUSTOM_LIBS}
 	ARCHIVE DESTINATION ${CUSTOM_LIBDIR}
 	COMPONENT Runtime
 	LIBRARY DESTINATION ${CUSTOM_LIBDIR}
@@ -130,40 +114,13 @@ install (TARGETS ${CUSTOM_LIBS} ${CUSTOM_PROGS}
 if (WIN32 AND _debug_build)
 	# install program database files
 	set (_pdb_files)
-	foreach (_target ${LIB_PREFIX}${CUSTOM_CUSTOM_RENAME} ${CUSTOM_PROGS})
+	foreach (_target ${LIB_PREFIX}${CUSTOM_CUSTOM_RENAME})
 		list (APPEND _pdb_files "${CMAKE_CURRENT_BINARY_DIR}/${_target}.pdb")
 	endforeach ()
 	install (FILES ${_pdb_files}
 		DESTINATION ${CUSTOM_BINDIR}
 		COMPONENT Runtime)
 endif (WIN32 AND _debug_build)
-
-# Non-monolithic installs:
-if (UNIX AND NOT CUSTOM_INSTALL_MONOLITHIC)
-	# symlink to gmt-wrapper in bindir and libdir:
-	get_target_property(_gmt_wrapper_name gmt OUTPUT_NAME)
-	file (RELATIVE_PATH _rpath /bin /${CUSTOM_BINDIR}/${_gmt_wrapper_name})
-	install (CODE "
-	execute_process (
-		COMMAND ${CMAKE_COMMAND} -E make_directory
-		\${CMAKE_INSTALL_PREFIX}/bin)
-	execute_process (
-		COMMAND ${CMAKE_COMMAND} -E create_symlink
-		${_rpath} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/${_gmt_wrapper_name}
-		COMMAND ${CMAKE_COMMAND} -E create_symlink
-		${_gmt_wrapper_name} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CUSTOM_BINDIR}/gmt)
-	")
-
-	# create symlinks in libdir/..:
-	file (RELATIVE_PATH _rpath_share /${CUSTOM_LIBDIR} /${CUSTOM_SHARE_PATH})
-	string (REGEX REPLACE "^[.][.]/(.*)" "\\1" _rpath_share "${_rpath_share}")
-	install (CODE "
-	execute_process (
-		COMMAND ${CMAKE_COMMAND} -E create_symlink
-		${_rpath_share} \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${CUSTOM_LIBDIR}/../share
-		COMMAND ${CMAKE_COMMAND} -E create_symlink
-	")
-endif (UNIX AND NOT CUSTOM_INSTALL_MONOLITHIC)
 
 # this prints out the final version of the compiler/linker flags
 string (TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
