@@ -62,7 +62,8 @@ set (CUSTOM_LIB_SRCS gmt_custom_module.h gmt_custom_module.c)
 set (CUSTOM_LIBS customlib)
 
 # libgmtcustom
-add_library (customlib
+set (CMAKE_SHARED_MODULE_SUFFIX .so)
+add_library (customlib MODULE
 	${CUSTOM_LIB_SRCS}
 	${CUSTOM_PROGS_SRCS})
 
@@ -86,11 +87,6 @@ set_target_properties (customlib
 	INSTALL_RPATH "${CMAKE_INSTALL_RPATH}"
 	LINK_FLAGS "${USER_CUSTOMLIB_LINK_FLAGS}"
 	DEFINE_SYMBOL "LIBRARY_EXPORTS")
-
-if (HAVE_DLADDR AND HAVE_LIBDL)
-	# link the dynamic linking loader library
-	target_link_libraries (customlib dl)
-endif (HAVE_DLADDR AND HAVE_LIBDL)
 
 # If a renaming of the custom dll has been set in ConfigUser.cmake
 if (WIN32 AND CUSTOM_CUSTOM_RENAME)
@@ -116,11 +112,11 @@ else (NOT CUSTOM_INSTALL_MONOLITHIC)
 endif (NOT CUSTOM_INSTALL_MONOLITHIC)
 
 # Rename custom target on non-monolithic installs to prevent version clash
-if (NOT CUSTOM_INSTALL_MONOLITHIC)
-	set_target_properties (customlib
-		PROPERTIES
-		OUTPUT_NAME ${CUSTOM_MAIN_NAME})
-endif (NOT CUSTOM_INSTALL_MONOLITHIC)
+#if (NOT CUSTOM_INSTALL_MONOLITHIC)
+#	set_target_properties (customlib
+#		PROPERTIES
+#		OUTPUT_NAME ${CUSTOM_MAIN_NAME})
+#endif (NOT CUSTOM_INSTALL_MONOLITHIC)
 
 # add the install targets
 install (TARGETS ${CUSTOM_LIBS} ${CUSTOM_PROGS}
