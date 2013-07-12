@@ -125,6 +125,13 @@ cat << EOF > ${FILE_GMT_MODULE_C}
 
 /* Sorted array with information for all GMT ${L_TAG} modules */
 
+/* name, library, and purpose for each module */
+struct Gmt_moduleinfo {
+	const char *name;             /* Program name */
+	const char *component;        /* Component (core, supplement, custom) */
+	const char *purpose;          /* Program purpose */
+};
+
 struct Gmt_moduleinfo g_${L_TAG}_module[] = {
 EOF
 

@@ -142,9 +142,6 @@ if (WIN32 AND _debug_build)
 		COMPONENT Runtime)
 endif (WIN32 AND _debug_build)
 
-string (REPLACE ".c" "" _gmt_modules "${CUSTOM_PROGS_SRCS}")
-install_module_symlink (${_gmt_modules})
-
 # Non-monolithic installs:
 if (UNIX AND NOT CUSTOM_INSTALL_MONOLITHIC)
 	# symlink to gmt-wrapper in bindir and libdir:
