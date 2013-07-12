@@ -30,6 +30,10 @@
 # exist. You can configure additional options there.
 #
 
+## Section 0: Define project name
+project (example)
+
+#------------------------------------------------------------------------
 # Make sure the user doesn't play dirty with symlinks
 get_filename_component (srcdir "${CMAKE_SOURCE_DIR}" REALPATH)
 get_filename_component (bindir "${CMAKE_BINARY_DIR}" REALPATH)
@@ -46,9 +50,6 @@ endif (${srcdir} STREQUAL ${bindir})
 # Define minimum CMake version required
 cmake_minimum_required (VERSION 2.8.5)
 
-# Define project name
-project (CUSTOM)
-
 # Where to find our CMake modules (this variable is visible in subdirectories).
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules/"
 	CACHE INTERNAL "Location of our custom CMake modules." FORCE)
@@ -62,7 +63,7 @@ include (FindUnixCommands)
 
 # Add subdirectories
 add_subdirectory (src)
-add_subdirectory (cmake/dist) # make distribution bundles (always last)
+#add_subdirectory (cmake/dist) # make distribution bundles (always last)
 get_property(GMT_CUSTOM_LIB_PATH TARGET customlib PROPERTY LOCATION)
 GET_FILENAME_COMPONENT (GMT_CUSTOM_LIB_NAME ${GMT_CUSTOM_LIB_PATH} NAME)
 
@@ -73,6 +74,7 @@ message(
 	"*  GMT include dir         : ${GMT_INCLUDE_DIR}\n"
 	"*\n"                          
 	"*  Locations:\n"              
+	"*  Custom name             : ${CMAKE_PROJECT_NAME}\n"
 	"*  CUSTOM library          : ${GMT_CUSTOM_LIB_NAME}\n"
 	"*  Installing CUSTOM in    : ${CMAKE_INSTALL_PREFIX}\n"
 	"*  CUSTOM_SHARE_PATH       : ${CMAKE_INSTALL_PREFIX}/${CUSTOM_SHARE_PATH}")

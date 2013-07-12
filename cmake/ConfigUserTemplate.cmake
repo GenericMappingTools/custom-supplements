@@ -37,32 +37,17 @@
 # 1a) Installation path (usually defaults to /usr/local) [auto]:
 #set (CMAKE_INSTALL_PREFIX "prefix_path")
 
-## The following should only be needed if CMake cannot automatically detect
-## the right version or path.
-
-# 1d) Set location of GMT (can be root directory, path to header file or path to gmt-config) [auto]:
+# 1b) Set location of GMT (can be root directory, path to header file or path to gmt-config) [auto]:
 #set (GMT_ROOT "gmt_install_prefix")
 
 ##
-## Section 2: CUSTOM features
+## Section 2: Advanced tweaking
 ##
 
-# 2e) Install convenience links for CUSTOM modules [TRUE]:
-# Uncomment to access modules only as: gmt modulename options
-#set (INSTALL_MODULE_LINKS FALSE)
-
-##
-## Section 3: Advanced PATHs
-##
-
-##
-## Section 4: Advanced tweaking
-##
-
-# 4c) Set build type can be: empty, Debug, Release, RelWithDebInfo or MinSizeRel [Release]:
+# 2a) Set build type can be: empty, Debug, Release, RelWithDebInfo or MinSizeRel [Release]:
 #set (CMAKE_BUILD_TYPE Debug)
 
-# 4d) Extra debugging for developers:
+# 2b) Extra debugging for developers:
 #add_definitions(-DDEBUG)
 #set (CMAKE_C_FLAGS "-Wall -Wdeclaration-after-statement") # recommended even for release build
 #set (CMAKE_C_FLAGS "-Wextra ${CMAKE_C_FLAGS}")            # extra warnings
@@ -70,22 +55,18 @@
 #set (CMAKE_C_FLAGS_RELEASE "-ggdb3 -O2 -Wuninitialized")  # check uninitialized variables
 #set (CMAKE_LINK_DEPENDS_DEBUG_MODE TRUE)                  # debug link dependencies
 
-# 4e) This is for GCC on Solaris to avoid "relocations remain against
+# 2c) This is for GCC on Solaris to avoid "relocations remain against
 # allocatable but non-writable sections" problems:
 #set (USER_GMTLIB_LINK_FLAGS -mimpure-text)
 
-# 4f) This may be needed to enable strdup and extended math functions
+# 2d) This may be needed to enable strdup and extended math functions
 # with GCC and Suncc on Solaris:
 #set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__EXTENSIONS__")
 
-# 4g) Do not warn when building with Windows SDK or Visual Studio Express:
+# 2e) Do not warn when building with Windows SDK or Visual Studio Express:
 #set (CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS ON)
 
-# 4h) Manually select runtime library when compiling with Windows SDK or Visual
-# Studio Express:
-#set (CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS c:/Windows/System32/msvcr100.dll)
-
-# 4j) If want to rename the DLLs to something else than the default (e.g. to append the bitness - Windows only)
+# 2f) If want to rename the DLLs to something else than the default (e.g. to append the bitness - Windows only)
 # if (WIN32)
 #	set (BITAGE 32)
 #	# Detect if we are building a 32 or 64 bits version

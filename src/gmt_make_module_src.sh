@@ -31,8 +31,8 @@ LIB=$1
 U_TAG=`echo $LIB | tr '[a-z]' '[A-Z]'`
 L_TAG=`echo $LIB | tr '[A-Z]' '[a-z]'`
 
-# Look in current dir (for core or users)
-grep "#define THIS_MODULE_LIB		\"$L_TAG\"" *.c | awk -F: '{print $1}' | sort > /tmp/tmp.lis
+# Look in current dir
+grep "#define THIS_MODULE_LIB" *.c | awk -F: '{print $1}' | sort > /tmp/tmp.lis
 
 rm -f /tmp/NAME.lis /tmp/LIB.lis /tmp/PURPOSE.lis /tmp/all.lis
 while read program; do

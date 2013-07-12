@@ -55,7 +55,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
 # Support code for the modules:
-set (CUSTOM_LIB_SRCS gmt_custom_module.h gmt_custom_module.c)
+set (CUSTOM_LIB_SRCS gmt_${CMAKE_PROJECT_NAME}_module.h gmt_${CMAKE_PROJECT_NAME}_module.c)
 
 # lib targets
 set (CUSTOM_LIBS customlib)
@@ -77,7 +77,7 @@ endif (HAVE_M_LIBRARY)
 
 set_target_properties (customlib
 	PROPERTIES
-	OUTPUT_NAME gmtcustom
+	OUTPUT_NAME gmt${CMAKE_PROJECT_NAME}
 	PREFIX "${LIB_PREFIX}"
 	IMPORT_PREFIX "${LIB_PREFIX}"
 	INSTALL_RPATH "${CMAKE_INSTALL_RPATH}"
@@ -96,9 +96,9 @@ create_debug_sym (${CUSTOM_LIBS})
 
 # temporary hack
 if (NOT CUSTOM_INSTALL_MONOLITHIC)
-	set (CUSTOM_MAIN_NAME custom${CUSTOM_INSTALL_NAME_SUFFIX})
+	set (CUSTOM_MAIN_NAME ${CMAKE_PROJECT_NAME}${CUSTOM_INSTALL_NAME_SUFFIX})
 else (NOT CUSTOM_INSTALL_MONOLITHIC)
-	set (CUSTOM_MAIN_NAME custom)
+	set (CUSTOM_MAIN_NAME ${CMAKE_PROJECT_NAME})
 endif (NOT CUSTOM_INSTALL_MONOLITHIC)
 
 
