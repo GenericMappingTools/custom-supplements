@@ -48,7 +48,7 @@ rm -f /tmp/tmp.lis /tmp/NAME.lis /tmp/LIB.lis /tmp/PURPOSE.lis /tmp/SORTED.txt /
 
 # The file with the message for each shared library
 FILE_MODULEINFO=gmt_custom_moduleinfo.txt
-LIB_STRING=`grep LIB_STRING $FILE_MODULEINFO | grep ${L_TAG} | awk -F= '{print $NF}'`
+LIB_STRING=`grep LIB_STRING $FILE_MODULEINFO | awk -F= '{print $NF}'`
 
 # The two output files produced
 FILE_GMT_MODULE_C=gmt_${L_TAG}_module.c

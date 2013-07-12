@@ -31,7 +31,7 @@
 #
 
 ## Section 0: Define project name
-project (example)
+project (custom)
 
 #------------------------------------------------------------------------
 # Make sure the user doesn't play dirty with symlinks
