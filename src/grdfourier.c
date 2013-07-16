@@ -30,6 +30,7 @@
 #define GMT_FFT_DIM	2	/* Dimension of FFT needed */
 #include "gmt.h"		/* All programs using the GMT API needs this */
 #include "custom_version.h"	/* Must include this to use Custom_version */
+
 /* Add any other include files needed by your program */
 #include <math.h>
 #include <string.h>
@@ -185,7 +186,7 @@ int GMT_grdfourier (void *API, int mode, void *args)
 	/* 1. Define local variables */
 	int error;
 	unsigned int wn_mode = 0;			/* To select radial [0], x (1), or y (2) wavenumber */
-	unsigned int rw_mode;				/* Mode to pass when reading or craeting grid */
+	unsigned int rw_mode;				/* Mode to pass when reading or creating grid */
 	uint64_t re, im, node;				/* Indeces into grids should be of this type */
 	double k, filter, k_ref;			/* Normally all math is done in double */
 	double *x = NULL, *y = NULL;			/* Coordinate arrays for the grid */

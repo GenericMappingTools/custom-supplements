@@ -59,7 +59,7 @@ COPY_YEAR=$(date +%Y)
 #
 
 cat << EOF > ${FILE_GMT_MODULE_H}
-/* \$Id\$
+/* \$Id:\$
  *
  * Copyright (c) 2012-${COPY_YEAR}
  * by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis, and F. Wobbe
@@ -103,7 +103,7 @@ EOF
 #
 
 cat << EOF > ${FILE_GMT_MODULE_C}
-/* \$Id\$
+/* \$Id:\$
  *
  * Copyright (c) 2012-${COPY_YEAR}
  * by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis, and F. Wobbe
