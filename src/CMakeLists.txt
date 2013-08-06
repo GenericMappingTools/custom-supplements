@@ -61,7 +61,9 @@ set (CUSTOM_LIB_SRCS gmt_${CMAKE_PROJECT_NAME}_module.h gmt_${CMAKE_PROJECT_NAME
 set (CUSTOM_LIBS customlib)
 
 # libgmtcustom
-set (CMAKE_SHARED_MODULE_SUFFIX .so)
+if (UNIX)
+	set (CMAKE_SHARED_MODULE_SUFFIX .so)
+endif (UNIX)
 add_library (customlib MODULE
 	${CUSTOM_LIB_SRCS}
 	${CUSTOM_PROGS_SRCS})
