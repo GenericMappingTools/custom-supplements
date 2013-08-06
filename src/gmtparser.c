@@ -26,7 +26,7 @@
 
 #include "gmt.h"		/* All programs using the GMT API needs this */
 #include "custom_version.h"	/* Must include this to use Custom_version */
-#include <strings.h>
+#include <string.h>
 
 #define GMT_PROG_OPTIONS	"-BIJKOPRUVXYafghinorst"	/* All the GMT common options */
 
