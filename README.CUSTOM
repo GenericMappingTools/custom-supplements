@@ -6,7 +6,7 @@ via the main gmt executable, just like the standard and supplemental
 GMT modules.  It is required that you have installed GMT 5 before
 proceeding.
 
-Paul Wessel, July 12, 2013
+Paul Wessel, November 5, 2013
 
 1. Decide what your shared library name should be.  This is a short
    name that will become part of the library name, e.g., "custom".
