@@ -103,7 +103,7 @@ EOF
 cat << EOF >> ${FILE_CUSTOM_MODULE_C}
 
 /* Pretty print all GMT ${LIB} module names and their purposes */
-void gmt_${L_TAG}_module_show_all (void *V_API) {
+void gmt_${LIB}_module_show_all (void *V_API) {
 	unsigned int module_id = 0;
 	char message[256];
 EOF
