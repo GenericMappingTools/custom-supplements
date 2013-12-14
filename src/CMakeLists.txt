@@ -18,9 +18,7 @@
 #
 # 1. To modify the cmake process: Edit your cmake/ConfigUser.cmake file
 # 2. To add more modules: Edit CUSTOM_PROGS_SRCS below.
-
-# This is src/CMakeLists.txt
-#
+# 3. Edit this: LIB_STRING="GMT custom: Tools for the custom project"
 
 # ==> Modules in this custom library [add the ones you have]:
 set (CUSTOM_PROGS_SRCS gmtaverage.c gmtmercmap.c gmtparser.c grdfourier.c)
@@ -44,6 +42,13 @@ message (STATUS "Searching dependent libraries. This may take a few minutes...")
 find_package (GMT REQUIRED)
 include_directories (${GMT_INCLUDE_DIR})
 
+find_package (GDAL)
+if (GDAL_FOUND)
+	set (HAVE_GDAL TRUE CACHE INTERNAL "System has GDAL")
+	include_directories (${GDAL_INCLUDE_DIR})
+	list (APPEND GMT_OPTIONAL_LIBRARIES ${GDAL_LIBRARIES})
+endif (GDAL_FOUND)
+
 find_package (Threads)
 
 # check for math and POSIX functions
@@ -55,15 +60,13 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
 # Support code for the modules:
-set (CUSTOM_LIB_SRCS gmt_${CMAKE_PROJECT_NAME}_module.h gmt_${CMAKE_PROJECT_NAME}_module.c)
+set (CUSTOM_LIB_SRCS ${CMAKE_PROJECT_NAME}_module.c)
 
 # lib targets
 set (CUSTOM_LIBS customlib)
 
-# libgmtcustom
-if (UNIX)
-	set (CMAKE_SHARED_MODULE_SUFFIX .so)
-endif (UNIX)
+# customlib:
+set (CMAKE_SHARED_MODULE_SUFFIX .so)
 add_library (customlib MODULE
 	${CUSTOM_LIB_SRCS}
 	${CUSTOM_PROGS_SRCS})
@@ -79,10 +82,11 @@ endif (HAVE_M_LIBRARY)
 
 set_target_properties (customlib
 	PROPERTIES
-	OUTPUT_NAME gmt${CMAKE_PROJECT_NAME}
-	PREFIX "${LIB_PREFIX}"
-	IMPORT_PREFIX "${LIB_PREFIX}"
-	INSTALL_RPATH "${CMAKE_INSTALL_RPATH}"
+	OUTPUT_NAME ${CMAKE_PROJECT_NAME}
+	RUNTIME_OUTPUT_NAME ${CMAKE_PROJECT_NAME}
+	LIBRARY_OUTPUT_DIRECTORY plugins
+	RUNTIME_OUTPUT_DIRECTORY plugins
+	PREFIX ""
 	LINK_FLAGS "${USER_CUSTOMLIB_LINK_FLAGS}"
 	DEFINE_SYMBOL "LIBRARY_EXPORTS")
 

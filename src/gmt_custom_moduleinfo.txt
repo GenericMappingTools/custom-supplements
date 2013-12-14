@@ -1,6 +1,0 @@
-# $Id$
-#
-# Give one entry per shared library you wish to build.  Make sure the
-# library tag is part of the preamble before the colon.
-#
-LIB_STRING	="GMT custom: Some custom plugins for the Generic Mapping Tools"

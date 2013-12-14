@@ -8,25 +8,24 @@ proceeding.
 
 Paul Wessel, November 5, 2013
 
-1. Decide what your shared library name should be.  This is a short
-   name that will become part of the library name, e.g., "custom".
+1. Decide what your plugin library name should be.  This is a short
+   name determines the plugin name, e.g., "custom".
    Below, we will refer to this name as TAG.
-2. You must code up your module.  There are some examples of fully
+2. Edit top-level CMakeLists.txt and change project (example) to project (TAG).
+3. You must code up your module.  There are some examples of fully
    working modules in src.  Base your code on those templates.
    Set the THIS_MODULE_LIB parameter in your code to TAG.
-3. Add you module's filename.c to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
-4. Based on gmt_custom_moduleinfo.txt, make your own gmt_TAG_moduleinfo.txt
-   and edit its contents.  One line for each shared library (usually one).
+4. Add you module's filename.c to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
+   and set the string for LIB_STRING to match your suite's purpose
 5. Create required source code automatically by running the script
-   	gmt_make_module_src.sh TAG
-6. Edit top-level CMakeLists.txt and change project (example) to project (TAG).
-7. In cmake, make a ConfigUser.cmake from the template, make any edits.
-8. Create a build directory in the top level directory, cd into build,
+   	gmt_make_module_src.sh
+6. In cmake, make a ConfigUser.cmake from the template, make any edits.
+7. Create a build directory in the top level directory, cd into build,
    and run cmake (see README.CMake for how).
-9. Make your plugin library with make -j<N> and make -j<N> install,
+8. Make your plugin library with make -j<N> and make -j<N> install,
    where <N> is how many cores you want to use in the building.
-10. Use gmt.conf's GMT_CUSTOM_LIBS parameter to specify your plugin
-   library.
-11. Try it out to see if your modules are listed:
+9. Use gmt.conf's GMT_CUSTOM_LIBS parameter to specify your plugin
+   library (i.e., custom.so).
+10. Try it out to see if your modules are listed:
 
 	gmt --help
