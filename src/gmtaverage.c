@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  *    $Id: gmtaverage.c 11801 2013-06-24 21:19:31Z pwessel $
  *
- *	Copyright (c) 1991-2013 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
+ *	Copyright (c) 1991-2014 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
  * data averageing modules GMT_blockmean|median|mode.
  *GMTAVERAGE
  * Author:	Paul Wessel
- * Date:	1-JAN-2013
+ * Date:	1-JAN-2014
  * Version:	5 API
  *
  * Brief synopsis: reads records of x, y, data, [weight] and writes out one (or no)
