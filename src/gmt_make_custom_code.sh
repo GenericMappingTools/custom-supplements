@@ -20,21 +20,30 @@
 #
 
 if [ ! "X$1" = "X" ]; then
-	cat <<- EOF >&2
-	gmt_make_custom_code.sh assists developers of custom supplements
-	in creating the required glue functions required by the GMT API
-	to enable "gmt --help" and "gmt --show-modules" for the extra
-	modules.  It also provides another function that is required by
+	cat << EOF >&2
+
+	gmt_make_custom_code.sh - Build API glue for new supplement
+
+	gmt_make_custom_code.sh assists developers of a custom supplement
+	by creating the required glue functions required by the GMT API
+	to enable "gmt --help" and "gmt --show-modules" for the custom
+	modules.  It also creates another function that is required by
 	the GMT_Encode_Options API function used by developers of any
-	external APIs such as MATLAB, Julia, Python, and others.
+	external APIs, such as MATLAB, Julia, Python, and others.
 	
-	<TAG> is a developers name for the custom shared plugin and it
-	is automatically obtained from the top-level CMakeLists.txt.
+	<TAG> is thr developers name for the custom shared plugin and the
+	name is obtained from project statement in the top-level CMakeLists.txt.
+
 	Run this script with no arguments and it will create two files:
+	
 		gmt_<TAG>_module.h.
 		gmt_<TAG>_module.c.
 	
-	EOF
+	The gmt-custom project's CMakeLists.txt files will automatically add
+	these to your provided C code.
+
+EOF
+	exit -1
 fi
 
 if [ ! -f ../CMakeLists.txt ]; then
