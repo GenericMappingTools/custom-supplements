@@ -18,7 +18,7 @@
 #
 # To modify the cmake process: Edit your cmake/ConfigUser.cmake file
 #
-# To build out-of-source do (example):
+# To build out-of-source do (for example):
 #
 #	mkdir build
 #	cd build
@@ -30,7 +30,7 @@
 # exist. You can configure additional options there.
 #
 
-## Section 0: Define project name
+## Section 0: Define project name. Change this to what your plugin should be named.
 project (custom)
 
 #------------------------------------------------------------------------

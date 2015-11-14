@@ -6,26 +6,28 @@ via the main gmt executable, just like the standard and supplemental
 GMT modules.  It is required that you have installed GMT 5 before
 proceeding.
 
-Paul Wessel, November 5, 2013
+Paul Wessel, November 13, 2015
 
 1. Decide what your plugin library name should be.  This is a short
-   name determines the plugin name, e.g., "custom".
+   name that determines the plugin name, e.g., "custom".
    Below, we will refer to this name as TAG.
 2. Edit top-level CMakeLists.txt and change project (example) to project (TAG).
-3. You must code up your module.  There are some examples of fully
+3. Code up your module(s).  There are some examples of fully
    working modules in src.  Base your code on those templates.
-   Set the THIS_MODULE_LIB parameter in your code to TAG.
-4. Add you module's filename.c to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
-   and set the string for LIB_STRING to match your suite's purpose
-5. Create required source code automatically by running the script
-   	gmt_make_module_src.sh
-6. In cmake, make a ConfigUser.cmake from the template, make any edits.
+   Set the THIS_MODULE_LIB parameter in your code to TAG and supply
+   reasonable settings to THIS_MODULE_KEYS.
+4. Add all your module's filename.c's to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
+   and set the string for LIB_STRING to match your plugin's purpose
+5. Create required glue source code automatically by running the script
+   	make_custom_module_src.sh
+6. In cmake, make ConfigUser.cmake by copying the template and make any edits.
 7. Create a build directory in the top level directory, cd into build,
    and run cmake (see README.CMake for how).
 8. Make your plugin library with make -j<N> and make -j<N> install,
    where <N> is how many cores you want to use in the building.
 9. Use gmt.conf's GMT_CUSTOM_LIBS parameter to specify your plugin
-   library (i.e., custom.so).
+   library (i.e., /full/path/to/custom.so).
 10. Try it out to see if your modules are listed:
 
 	gmt --help
+	gmt --show-modules

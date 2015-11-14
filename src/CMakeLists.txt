@@ -1,7 +1,7 @@
 #
 # $Id: CMakeLists.txt 11838 2013-06-28 06:49:32Z pwessel $
 #
-# Copyright (c) 1991-2014 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis, and F. Wobbe
+# Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis, and F. Wobbe
 # See LICENSE.TXT file for copying and redistribution conditions.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -60,7 +60,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR})
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
 # Support code for the modules:
-set (CUSTOM_LIB_SRCS ${CMAKE_PROJECT_NAME}_module.c)
+set (CUSTOM_LIB_SRCS gmt_${CMAKE_PROJECT_NAME}_module.c)
 
 # lib targets
 set (CUSTOM_LIBS customlib)

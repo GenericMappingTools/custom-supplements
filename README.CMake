@@ -1,7 +1,7 @@
 ////
 $Id: README.CMake 11801 2013-06-24 21:19:31Z pwessel $
 
-Copyright (c) 1991-2013 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis
+Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis
 and F. Wobbe. See LICENSE.TXT file for copying and redistribution conditions.
 
 Contact info: gmt.soest.hawaii.edu
@@ -13,7 +13,7 @@ CMake User Guide
 Build and runtime prerequisites
 -------------------------------
 
-You need CMake (>=2.8.5) and an installation of GMT (>=5.0.0).
+You need CMake (>=2.8.5) and an installation of GMT (>=5.2.0).
 
 Information for building GMT 5 with CMake
 -----------------------------------------

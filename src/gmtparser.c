@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  *	$Id$
  *
- *	Copyright (c) 1991-2014 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
+ *	Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@
 #define THIS_MODULE_NAME	"gmtparser"
 #define THIS_MODULE_LIB		"custom"
 #define THIS_MODULE_PURPOSE	"Demonstrate parsing of input data, defaults, and options"
+#define THIS_MODULE_KEYS	""
 
 #include "gmt.h"		/* All programs using the GMT API needs this */
 #include "custom_version.h"	/* Must include this to use Custom_version */

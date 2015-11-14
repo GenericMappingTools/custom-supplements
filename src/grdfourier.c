@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  *	$Id$
  *
- *	Copyright (c) 1991-2014 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
+ *	Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -26,6 +26,7 @@
 #define THIS_MODULE_NAME	"grdfourier"
 #define THIS_MODULE_LIB		"custom"
 #define THIS_MODULE_PURPOSE	"Create a grid, add a spike, filter it in frequency domain, and write output"
+#define THIS_MODULE_KEYS	"<GI,GGO,RG-"
 
 #define GMT_FFT_DIM	2	/* Dimension of FFT needed */
 #include "gmt.h"		/* All programs using the GMT API needs this */

@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  *	$Id: gmtmercmap.c 11801 2013-06-24 21:19:31Z pwessel $
  *
- *	Copyright (c) 1991-2014 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
+ *	Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -28,6 +28,7 @@
 #define THIS_MODULE_NAME	"gmtmercmap"
 #define THIS_MODULE_LIB		"custom"
 #define THIS_MODULE_PURPOSE	"Make a Mercator color map from ETOPO 1, 2, or 5 arc min global relief grids"
+#define THIS_MODULE_KEYS	"CCi,>XO,RG-"
 
 #include "gmt.h"
 #include "custom_version.h"	/* Must include this to use Custom_version */

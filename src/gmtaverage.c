@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  *    $Id: gmtaverage.c 11801 2013-06-24 21:19:31Z pwessel $
  *
- *	Copyright (c) 1991-2014 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
+ *	Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -32,6 +32,7 @@
 #define THIS_MODULE_NAME	"gmtaverage"
 #define THIS_MODULE_LIB		"custom"
 #define THIS_MODULE_PURPOSE	"Block average (x,y,z) data tables by mean, median, or mode estimation"
+#define THIS_MODULE_KEYS	"<DI,>DO,RG-"
 
 #include "gmt.h"	/* Must include this to use GMT API */
 #include "custom_version.h"	/* Must include this to use Custom_version */
