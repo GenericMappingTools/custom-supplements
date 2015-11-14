@@ -3,7 +3,7 @@
 This README file explains the various steps you must take to design
 and successfully build a custom plugin library that can be accessed
 via the main gmt executable, just like the standard and supplemental
-GMT modules.  It is required that you have installed GMT 5 before
+GMT modules.  It is required that you have installed GMT 5.2 before
 proceeding.
 
 Paul Wessel, November 13, 2015
@@ -19,7 +19,8 @@ Paul Wessel, November 13, 2015
 4. Add all your module's filename.c's to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
    and set the string for LIB_STRING to match your plugin's purpose
 5. Create required glue source code automatically by running the script
-   	make_custom_module_src.sh
+   	gmt_make_custom_code.sh
+   in the src directory.
 6. In cmake, make ConfigUser.cmake by copying the template and make any edits.
 7. Create a build directory in the top level directory, cd into build,
    and run cmake (see README.CMake for how).
