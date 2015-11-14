@@ -9,16 +9,46 @@
 # Below, <TAG> is a users custom shared lib tag set via the
 # project statement in the top-level CMakeLists.txt
 #
-# This script will find all the C files in the current dir
-# and extract all the THIS_MODULE_PURPOSE
-# and other strings from the sources files, then create one file:
+# This script will find all the C files glue in the current dir
+# and extract all the THIS_MODULE_{NAME,LIB,PURPOSE,KEYS}
+# strings from the sources files, then create two files:
+# 	gmt_<TAG>_module.h.
 # 	gmt_<TAG>_module.c.
 #
-# Retrun this script when there are changes in the code.
+# Rerun this script when there are changes in the code or you
+# have added more modules.
 #
 
+if [ ! "X$1" = "X" ]; then
+	cat <<- EOF >&2
+	gmt_make_custom_code.sh assists developers of custom supplements
+	in creating the required glue functions required by the GMT API
+	to enable "gmt --help" and "gmt --show-modules" for the extra
+	modules.  It also provides another function that is required by
+	the GMT_Encode_Options API function used by developers of any
+	external APIs such as MATLAB, Julia, Python, and others.
+	
+	<TAG> is a developers name for the custom shared plugin and it
+	is automatically obtained from the top-level CMakeLists.txt.
+	Run this script with no arguments and it will create two files:
+		gmt_<TAG>_module.h.
+		gmt_<TAG>_module.c.
+	
+	EOF
+fi
+
+if [ ! -f ../CMakeLists.txt ]; then
+	echo "gmt_make_custom_code.sh: Cannot find CMakeLists.txt in parent directory - aborting." >&2
+	exit -1
+fi
 set -e
 LIB=`grep '^project' ../CMakeLists.txt | tr '()' '  ' | awk '{print $2}'`
+if [ "X$LIB" = "X" ]; then
+	echo "gmt_make_custom_code.sh: Cannot find project setting in CMakeLists.txt in parent directory - aborting." >&2
+	exit -1
+fi
+
+echo "gmt_make_custom_code.sh: Scanning for modules" >&2
 # Make sure we get both upper- and lower-case versions of the tag
 U_TAG=`echo $LIB | tr '[a-z]' '[A-Z]'`
 L_TAG=`echo $LIB | tr '[A-Z]' '[a-z]'`
@@ -49,6 +79,7 @@ COPY_YEAR=$(date +%Y)
 #
 # Generate FILE_CUSTOM_MODULE_H
 #
+echo "gmt_make_custom_code.sh: Generate ${FILE_CUSTOM_MODULE_H}" >&2
 
 cat << EOF > ${FILE_CUSTOM_MODULE_H}
 /* \$Id\$
@@ -97,6 +128,7 @@ EOF
 #
 # Generate FILE_CUSTOM_MODULE_C
 #
+echo "gmt_make_custom_code.sh: Generate ${FILE_CUSTOM_MODULE_C}" >&2
 
 cat << EOF > ${FILE_CUSTOM_MODULE_C}
 /* \$Id\$
