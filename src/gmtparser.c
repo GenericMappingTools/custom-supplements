@@ -16,8 +16,13 @@
  *	Contact info: gmt.soest.hawaii.edu
  *--------------------------------------------------------------------*/
 /*
- *  Testing API conversions, common settings, and parameters via
- *  GMT_Get_Value, GMT_Get_Default, GMT_Get_Common
+ * Author:	Paul Wessel
+ * Date:	15-JAN-2015
+ * Version:	5 API
+ *
+ *  Brief synopsis: gmtparser tests API conversions, common settings,
+ *  and parameters via GMT_Get_Value, GMT_Get_Default, GMT_Get_Common
+ *
  */
 
 #define THIS_MODULE_NAME	"gmtparser"
@@ -33,7 +38,7 @@
 
 int GMT_gmtparser_usage (void *API, int level)
 {	/* Specifies the full usage message from the program when no argument are given */
-	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
+	GMT_show_name_and_purpose (API, THIS_MODULE_LIB, THIS_MODULE_NAME, THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
 	GMT_Message (API, GMT_TIME_NONE, "usage: gmtparser [<any number of the GMT common options>]\n\n");
 

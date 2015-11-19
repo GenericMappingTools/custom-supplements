@@ -18,9 +18,9 @@
 /*
  * Program to demonstrate use of GMT API to call one of the three spatial
  * data averageing modules GMT_blockmean|median|mode.
- *GMTAVERAGE
+ *
  * Author:	Paul Wessel
- * Date:	1-JAN-2014
+ * Date:	15-JAN-2015
  * Version:	5 API
  *
  * Brief synopsis: reads records of x, y, data, [weight] and writes out one (or no)
@@ -34,7 +34,7 @@
 #define THIS_MODULE_PURPOSE	"Block average (x,y,z) data tables by mean, median, or mode estimation"
 #define THIS_MODULE_KEYS	"<DI,>DO,RG-"
 
-#include "gmt.h"	/* Must include this to use GMT API */
+#include "gmt.h"		/* Must include this to use GMT API */
 #include "custom_version.h"	/* Must include this to use Custom_version */
 #include <string.h>
 

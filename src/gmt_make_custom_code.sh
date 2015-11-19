@@ -19,7 +19,7 @@
 # have added more modules.
 #
 
-if [ ! "X$1" = "X" ]; then
+if [ "X$1" = "X" ]; then
 	cat << EOF >&2
 
 	gmt_make_custom_code.sh - Build API glue for new supplement

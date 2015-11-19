@@ -17,7 +17,7 @@
  *--------------------------------------------------------------------*/
 /*
  * Author:	Paul Wessel
- * Date:	15-NOV-2011
+ * Date:	15-JAN-2015
  * Version:	5 API
  *
  * Brief synopsis: gmtmercmap will make a nice Mercator map using etopo[1|2|5].
