@@ -234,7 +234,7 @@ cat << EOF >> ${FILE_CUSTOM_MODULE_C}
 }
 
 /* Produce single list on stdout of all GMT ${LIB} module names for gmt --show-modules */
-void gmt_${LIB}_module_list_all (void *V_API) {
+void gmt_${LIB}_module_list_all (void *API) {
 	unsigned int module_id = 0;
 	GMT_UNUSED(API);
 	while (g_${L_TAG}_module[module_id].name != NULL) {
