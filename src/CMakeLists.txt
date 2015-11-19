@@ -16,7 +16,7 @@
 # Contact info: gmt.soest.hawaii.edu
 #-------------------------------------------------------------------------------
 #
-# 1. To modify the cmake process: Edit your cmake/ConfigUser.cmake file
+# 1. To modify the cmake process: Customize your cmake/ConfigUser.cmake file
 # 2. To add more modules: Edit CUSTOM_PROGS_SRCS below.
 # 3. Edit this: LIB_STRING="GMT custom: Tools for the custom project"
 
