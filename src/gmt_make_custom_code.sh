@@ -171,6 +171,10 @@ cat << EOF >> ${FILE_CUSTOM_MODULE_C}
 #include "gmt.h"
 #include "${FILE_CUSTOM_MODULE_H}"
 #include <string.h>
+
+#ifndef GMT_UNUSED
+#define GMT_UNUSED(x) (void)(x)
+#endif
 EOF
 cat << EOF >> ${FILE_CUSTOM_MODULE_C}
 
