@@ -24,7 +24,7 @@ Paul Wessel, November 13, 2015
 6. In cmake, make ConfigUser.cmake by copying the template and make any edits.
 7. Create a build directory in the top level directory, cd into build,
    and run cmake (see README.CMake for how).
-8. Make your plugin library with make -j<N> and make -j<N> install,
+8. Make your plugin library with make -j<N> and then  run make -j<N> install,
    where <N> is how many cores you want to use in the building.
 9. Use gmt.conf's GMT_CUSTOM_LIBS parameter to specify your plugin
    library (i.e., /full/path/to/custom.so).
