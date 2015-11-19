@@ -35,6 +35,7 @@
 #define THIS_MODULE_KEYS	"<DI,>DO,RG-"
 
 #include "gmt.h"		/* Must include this to use GMT API */
+#include "gmt_synopsis.h"	/* Must include this to use the synopsis macros*/
 #include "custom_version.h"	/* Must include this to use Custom_version */
 #include <string.h>
 

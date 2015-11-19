@@ -31,6 +31,7 @@
 #define THIS_MODULE_KEYS	"CCi,>XO,RG-"
 
 #include "gmt.h"
+#include "gmt_synopsis.h"	/* Must include this to use the synopsis macros*/
 #include "custom_version.h"	/* Must include this to use Custom_version */
 #include <math.h>
 #include <string.h>

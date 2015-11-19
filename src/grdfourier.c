@@ -93,7 +93,7 @@ void Free_grdfourier_Ctrl (void *API, struct GMT_GRDFOURIER_CTRL *C) {	/* Free m
 
 int GMT_grdfourier_usage (void *API, int level)
 {	/* Specifies the full usage message from the program when no argument are given */
-	GMT_show_name_and_purpose (API, THIS_MODULE_LIB, THIS_MODULE_NAME, THIS_MODULE_PURPOSE);
+	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
 	GMT_Message (API, GMT_TIME_NONE, "usage: grdfourier -G<outgrid> [<ingrid> ][-I<xinc>[/<yinc>]] \n");
 	GMT_Message (API, GMT_TIME_NONE, "	[-R<xmin/xmax/ymin/ymax>] [-A<row/col>] [-D<dir>] [-F<width>]\n\n");
