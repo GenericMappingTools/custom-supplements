@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  *    $Id: gmtaverage.c 11801 2013-06-24 21:19:31Z pwessel $
  *
- *	Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
+ *	Copyright (c) 1991-2016 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -53,7 +53,7 @@ struct GMTAVERAGE_CTRL {	/* All local control options for this program (except c
 	} T;
 };
 
-void * New_gmtaverage_Ctrl () {	/* Allocate and initialize a new control structure */
+static void * New_Ctrl () {	/* Allocate and initialize a new control structure */
 	struct GMTAVERAGE_CTRL *C;
 	
 	C = calloc (1, sizeof (struct GMTAVERAGE_CTRL));
@@ -62,11 +62,11 @@ void * New_gmtaverage_Ctrl () {	/* Allocate and initialize a new control structu
 	return (C);
 }
 
-void Free_gmtaverage_Ctrl (struct GMTAVERAGE_CTRL *C) {	/* Deallocate control structure */
+static void Free_Ctrl (struct GMTAVERAGE_CTRL *C) {	/* Deallocate control structure */
 	free ((void *)C);	
 }
 
-int GMT_gmtaverage_usage (void *API, int level)
+static int usage (void *API, int level)
 {
 	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
@@ -107,7 +107,7 @@ int GMT_gmtaverage_usage (void *API, int level)
 	return (EXIT_FAILURE);
 }
 
-int GMT_gmtaverage_parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OPTION *options)
+static int parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OPTION *options)
 {
 	/* This parses the options provided to gmtaverage and sets parameters in CTRL.
 	 * Any GMT common options will override values set previously by other commands.
@@ -180,10 +180,9 @@ int GMT_gmtaverage_parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OP
 /* Must free allocated memory before returning */
 #define Free_Options {if (GMT_Destroy_Options (API, &options) != GMT_NOERROR) return (EXIT_FAILURE);}
 #define Bailout(code) {Free_Options; return (code);}
-#define Return(code) {Free_gmtaverage_Ctrl (Ctrl); Bailout (code);}
+#define Return(code) {Free_Ctrl (Ctrl); Bailout (code);}
 
-int GMT_gmtaverage (void *API, int mode, void *args)
-{
+int GMT_gmtaverage (void *API, int mode, void *args) {
 	int error = 0;
 	char *module = NULL;
 	struct GMT_OPTION *options = NULL, *t_ptr = NULL;
@@ -192,17 +191,17 @@ int GMT_gmtaverage (void *API, int mode, void *args)
 	/*---------------------------- This is the gmtaverage main code ----------------------------*/
 
 	if (API == NULL) return (EXIT_FAILURE);
- 	if (mode == GMT_MODULE_PURPOSE) return (GMT_gmtaverage_usage (API, GMT_MODULE_PURPOSE));	/* Return the purpose of program */
+ 	if (mode == GMT_MODULE_PURPOSE) return (usage (API, GMT_MODULE_PURPOSE));	/* Return the purpose of program */
 	options = GMT_Create_Options (API, mode, args);	/* Set or get option list */
 
         /* Handle special cases like usage and synopsis */
-	if (!options || options->option == GMT_OPT_USAGE) Bailout (GMT_gmtaverage_usage (API, GMT_USAGE));	/* Exit the usage message */
-	if (options->option == GMT_OPT_SYNOPSIS) Bailout (GMT_gmtaverage_usage (API, GMT_SYNOPSIS));	/* Exit the synopsis */
+	if (!options || options->option == GMT_OPT_USAGE) Bailout (usage (API, GMT_USAGE));	/* Exit the usage message */
+	if (options->option == GMT_OPT_SYNOPSIS) Bailout (usage (API, GMT_SYNOPSIS));	/* Exit the synopsis */
 	/* Parse the common command-line arguments */
 	if (GMT_Parse_Common (API, GMT_PROG_OPTIONS, options)) Bailout (EXIT_FAILURE);	/* Parse the common options */
 	/* Parse the local command-line arguments */
-	Ctrl = New_gmtaverage_Ctrl ();							/* Allocate gmtaverage control structure */
-	if ((error = GMT_gmtaverage_parse (API, Ctrl, options))) Bailout (EXIT_FAILURE);	/* Parse local option arguments */
+	Ctrl = New_Ctrl ();							/* Allocate gmtaverage control structure */
+	if ((error = parse (API, Ctrl, options))) Bailout (EXIT_FAILURE);	/* Parse local option arguments */
 
 	/* Determine which value to report and use that to select the correct GMT module */
 	

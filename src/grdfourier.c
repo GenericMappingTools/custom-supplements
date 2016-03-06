@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  *	$Id$
  *
- *	Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
+ *	Copyright (c) 1991-2016 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -71,7 +71,7 @@ struct GMT_GRDFOURIER_CTRL {	/* Here is where you collect your programs specific
 	} N;
 };
 
-struct GMT_GRDFOURIER_CTRL * New_grdfourier_Ctrl (void *API) {	/* Allocate and initialize a new control structure for your program*/
+static struct GMT_GRDFOURIER_CTRL * New_Ctrl (void *API) {	/* Allocate and initialize a new control structure for your program*/
 	struct GMT_GRDFOURIER_CTRL *C = NULL;
 
 	C = calloc (1, sizeof (struct GMT_GRDFOURIER_CTRL));
@@ -83,7 +83,7 @@ struct GMT_GRDFOURIER_CTRL * New_grdfourier_Ctrl (void *API) {	/* Allocate and i
 	return (C);
 }
 
-void Free_grdfourier_Ctrl (void *API, struct GMT_GRDFOURIER_CTRL *C) {	/* Free memory used by Ctrl and deallocate it */
+static void Free_Ctrl (void *API, struct GMT_GRDFOURIER_CTRL *C) {	/* Free memory used by Ctrl and deallocate it */
 	if (!C) return;
 	if (C->In.file) free (C->In.file);	
 	if (C->G.file)  free (C->G.file);	
@@ -91,7 +91,7 @@ void Free_grdfourier_Ctrl (void *API, struct GMT_GRDFOURIER_CTRL *C) {	/* Free m
 	free (C);	
 }
 
-int GMT_grdfourier_usage (void *API, int level)
+static int usage (void *API, int level)
 {	/* Specifies the full usage message from the program when no argument are given */
 	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
@@ -116,7 +116,7 @@ int GMT_grdfourier_usage (void *API, int level)
 	return (EXIT_FAILURE);
 }
 
-int GMT_grdfourier_parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION *options)
+static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION *options)
 {
 	/* This parses the options provided to grdfourier and sets parameters in Ctrl.
 	 * Note: Ctrl has already been initialized and non-zero default values set.
@@ -184,10 +184,9 @@ int GMT_grdfourier_parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GM
 /* Convenience macros to free memory before exiting due to error or completion */
 #define Free_Options {if (GMT_Destroy_Options (API, &options) != GMT_NOERROR) return (EXIT_FAILURE);}
 #define bailout(code) {Free_Options; return (code);}
-#define Return(code) {Free_grdfourier_Ctrl (API, Ctrl); bailout (code);}
+#define Return(code) {Free_Ctrl (API, Ctrl); bailout (code);}
 
-int GMT_grdfourier (void *API, int mode, void *args)
-{
+int GMT_grdfourier (void *API, int mode, void *args) {
 	/* 1. Define local variables */
 	int error;
 	unsigned int wn_mode = 0;			/* To select radial [0], x (1), or y (2) wavenumber */
@@ -201,18 +200,18 @@ int GMT_grdfourier (void *API, int mode, void *args)
 	struct GMT_OPTION *options = NULL;		/* Linked list of program options */
 
 	if (API == NULL) return (EXIT_FAILURE);
- 	if (mode == GMT_MODULE_PURPOSE) return (GMT_grdfourier_usage (API, GMT_MODULE_PURPOSE));	/* Return the purpose of program */
+ 	if (mode == GMT_MODULE_PURPOSE) return (usage (API, GMT_MODULE_PURPOSE));	/* Return the purpose of program */
 	options = GMT_Create_Options (API, mode, args);	/* Set or get option list */
 
-	if (!options || options->option == GMT_OPT_USAGE) bailout (GMT_grdfourier_usage (API, GMT_USAGE));	/* Return the usage message */
-	if (options->option == GMT_OPT_SYNOPSIS) bailout (GMT_grdfourier_usage (API, GMT_SYNOPSIS));		/* Return the synopsis */
+	if (!options || options->option == GMT_OPT_USAGE) bailout (usage (API, GMT_USAGE));	/* Return the usage message */
+	if (options->option == GMT_OPT_SYNOPSIS) bailout (usage (API, GMT_SYNOPSIS));		/* Return the synopsis */
 
 	/* Parse the commont GMT command-line options */
 	if (GMT_Parse_Common (API, GMT_PROG_OPTIONS, options)) Return (EXIT_FAILURE);
 
 	/* Allocate Ctrl and parse program-specific options */
-	Ctrl = New_grdfourier_Ctrl (API);	/* Allocate and initialize a new control structure */
-	if ((error = GMT_grdfourier_parse (API, Ctrl, options))) Return (error);
+	Ctrl = New_Ctrl (API);	/* Allocate and initialize a new control structure */
+	if ((error = parse (API, Ctrl, options))) Return (error);
 
 	/* ---------------------------- This is the grdfourier main code ----------------------------*/
 

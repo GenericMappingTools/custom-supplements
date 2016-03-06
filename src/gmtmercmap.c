@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  *	$Id: gmtmercmap.c 11801 2013-06-24 21:19:31Z pwessel $
  *
- *	Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
+ *	Copyright (c) 1991-2016 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -72,7 +72,7 @@ struct GMTMERCMAP_CTRL {
 	} S;
 };
 
-void *New_gmtmercmap_Ctrl (unsigned int length_unit) {	/* Allocate and initialize a new control structure */
+static void *New_Ctrl (unsigned int length_unit) {	/* Allocate and initialize a new control structure */
 	struct GMTMERCMAP_CTRL *C;
 
 	C = calloc (1, sizeof (struct GMTMERCMAP_CTRL));
@@ -81,13 +81,13 @@ void *New_gmtmercmap_Ctrl (unsigned int length_unit) {	/* Allocate and initializ
 	return (C);
 }
 
-void Free_gmtmercmap_Ctrl (struct GMTMERCMAP_CTRL *C) {	/* Deallocate control structure */
+static void Free_Ctrl (struct GMTMERCMAP_CTRL *C) {	/* Deallocate control structure */
 	if (!C) return;
 	if (C->C.file) free (C->C.file);
 	free ((void*)C);
 }
 
-int GMT_gmtmercmap_usage (void *API, unsigned int length_unit, int level)
+static int usage (void *API, unsigned int length_unit, int level)
 {
 	char width[4];
 	if (length_unit == 0) strcpy (width, "25c"); else strcpy (width, "10i");
@@ -112,7 +112,7 @@ int GMT_gmtmercmap_usage (void *API, unsigned int length_unit, int level)
 	return (EXIT_FAILURE);
 }
 
-int GMT_gmtmercmap_parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OPTION *options)
+static int parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OPTION *options)
 {
 	/* This parses the options provided to gmtmercmap and sets parameters in Ctrl.
 	 * Note Ctrl has already been initialized and non-zero default values set.
@@ -171,14 +171,14 @@ int GMT_gmtmercmap_parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OP
 	return (n_errors);
 }
 
-#define Return(code) {Free_gmtmercmap_Ctrl (Ctrl); return (code);}
+#define Return(code) {Free_Ctrl (Ctrl); return (code);}
 
 #define ETOPO1M_LIMIT 100	/* ETOPO1 cut-offs in degrees squared for 1 arc min */
 #define ETOPO2M_LIMIT 10000	/* ETOPO2 cut-offs in degrees squared for 2 arc min */
 
 double cm2unit[4] = {1.0, 1.0/2.54, 0.01, 72.0/2.54};
 
-void set_var (int mode, char *name, char *value)
+static void set_var (int mode, char *name, char *value)
 {	/* Assigns the text variable given the script mode */
 	switch (mode) {
 		case GMT_BASH_MODE: printf ("%s=%s\n", name, value); break;
@@ -187,7 +187,7 @@ void set_var (int mode, char *name, char *value)
 	}
 }
 
-void set_dim (int mode, unsigned int length_unit, char *name, double value)
+static void set_dim (int mode, unsigned int length_unit, char *name, double value)
 {	/* Assigns the double value given the script mode and prevailing measure unit [value is passed in inches] */
 	static char unit[4] = "cimp", text[256];
 	//double out = value * cm2unit[length_unit];
@@ -196,7 +196,7 @@ void set_dim (int mode, unsigned int length_unit, char *name, double value)
 	set_var (mode, name, text);
 }
 
-char *get_var (int mode, char *name)
+static char *get_var (int mode, char *name)
 {	/* Places this variable where needed in the script via the assignment static variable */
 	static char assignment[BUFSIZ];
 	if (mode == GMT_DOS_MODE)
@@ -206,8 +206,7 @@ char *get_var (int mode, char *name)
 	return (assignment);
 }
 
-int GMT_gmtmercmap (void *API, int mode, void *args)
-{
+int GMT_gmtmercmap (void *API, int mode, void *args) {
 	int error, min, z_ID, i_ID, c_ID, t_ID;
 	unsigned int B_active, K_active, O_active, P_active, X_active, Y_active;
 	unsigned int length_unit = 0;
@@ -227,13 +226,13 @@ int GMT_gmtmercmap (void *API, int mode, void *args)
 	/*----------------------- Standard module initialization and parsing ----------------------*/
 
 	if (API == NULL) return (EXIT_FAILURE);
- 	if (mode == GMT_MODULE_PURPOSE) return (GMT_gmtmercmap_usage (API, length_unit, GMT_MODULE_PURPOSE));	/* Return the purpose of program */
+ 	if (mode == GMT_MODULE_PURPOSE) return (usage (API, length_unit, GMT_MODULE_PURPOSE));	/* Return the purpose of program */
 	options = GMT_Create_Options (API, mode, args);	/* Set or get option list */
 
 	if (!options || options->option == GMT_OPT_USAGE) 
-		return (GMT_gmtmercmap_usage (API, length_unit, GMT_USAGE));		/* Return the usage message */
+		return (usage (API, length_unit, GMT_USAGE));		/* Return the usage message */
 	if (options && options->option == GMT_OPT_SYNOPSIS) 
-		return (GMT_gmtmercmap_usage (API, length_unit, GMT_SYNOPSIS));	/* Return the synopsis */
+		return (usage (API, length_unit, GMT_SYNOPSIS));	/* Return the synopsis */
 
 	/* Parse the common command-line arguments */
 	if (GMT_Parse_Common (API, GMT_PROG_OPTIONS, options)) return (EXIT_FAILURE);	/* Parse the common options */
@@ -243,8 +242,8 @@ int GMT_gmtmercmap (void *API, int mode, void *args)
 	else if (!strcmp (def_unit, "m")) length_unit = 2;
 	else if (!strcmp (def_unit, "point")) length_unit = 3;
 
-	Ctrl = New_gmtmercmap_Ctrl (length_unit);	/* Allocate and initialize a new control structure */
-	if ((error = GMT_gmtmercmap_parse (API, Ctrl, options))) Return (error);
+	Ctrl = New_Ctrl (length_unit);	/* Allocate and initialize a new control structure */
+	if ((error = parse (API, Ctrl, options))) Return (error);
 
 	/*---------------------------- This is the gmtmercmap main code ----------------------------*/
 

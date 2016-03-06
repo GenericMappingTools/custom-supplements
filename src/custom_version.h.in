@@ -1,7 +1,7 @@
 /*
  * $Id: gmt_version.h.in 10866 2013-02-03 07:51:01Z pwessel $
  *
- *  Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo,
+ *  Copyright (c) 1991-2016 by P. Wessel, W. H. F. Smith, R. Scharroo,
  *  F. Wobbe, and J. Luis
  *
  * See LICENSE.TXT file for copying and redistribution conditions.

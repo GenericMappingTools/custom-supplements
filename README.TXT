@@ -16,7 +16,7 @@ Paul Wessel, November 18, 2015
     working modules in src.  Model your code after those templates.
     Set the THIS_MODULE_LIB parameter in your modules to <TAG> and supply
     reasonable settings to THIS_MODULE_KEYS (see API documentation for the
-    GMT_ENcode_Options function for more details).
+    GMT_Encode_Options function for more details).
 4.  Add all your modules filenames to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
     and set the string for LIB_STRING to match your plugin's key purpose.
 5.  Create required glue source code automatically by running the script

@@ -1,7 +1,7 @@
 /*--------------------------------------------------------------------
  *	$Id$
  *
- *	Copyright (c) 1991-2015 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
+ *	Copyright (c) 1991-2016 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
  *
  *	This program is free software; you can redistribute it and/or modify
@@ -36,7 +36,7 @@
 
 #define GMT_PROG_OPTIONS	"-BIJKOPRUVXYafghinorst"	/* All the GMT common options */
 
-int GMT_gmtparser_usage (void *API, int level)
+static int usage (void *API, int level)
 {	/* Specifies the full usage message from the program when no argument are given */
 	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
@@ -61,7 +61,7 @@ int GMT_gmtparser_usage (void *API, int level)
 	return (EXIT_FAILURE);
 }
 
-void report (char *name, int count, double par[])
+static void report (char *name, int count, double par[])
 {
 	int k;
 	fprintf (stderr, "Got %s: ret = %d", name, count);
@@ -73,19 +73,18 @@ void report (char *name, int count, double par[])
 #define Free_Options {if (GMT_Destroy_Options (API, &options) != GMT_NOERROR) return (EXIT_FAILURE);}
 #define Return(code) {Free_Options; return (code);}
 
-int GMT_gmtparser (void *API, int mode, void *args)
-{
+int GMT_gmtparser (void *API, int mode, void *args) {
 	int ret, k;
 	double value[100];
 	char input[BUFSIZ], parameter[BUFSIZ], *commons = GMT_PROG_OPTIONS, string[2] = {0, 0};
 	struct GMT_OPTION *options = NULL;		/* Linked list of program options */
 
 	if (API == NULL) return (EXIT_FAILURE);
- 	if (mode == GMT_MODULE_PURPOSE) return (GMT_gmtparser_usage (API, GMT_MODULE_PURPOSE));	/* Return the purpose of program */
+ 	if (mode == GMT_MODULE_PURPOSE) return (usage (API, GMT_MODULE_PURPOSE));	/* Return the purpose of program */
 	options = GMT_Create_Options (API, mode, args);	/* Set or get option list */
 
-	if (!options || options->option == GMT_OPT_USAGE) Return (GMT_gmtparser_usage (API, GMT_USAGE));	/* Return the usage message */
-	if (options->option == GMT_OPT_SYNOPSIS) Return (GMT_gmtparser_usage (API, GMT_SYNOPSIS));		/* Return the synopsis */
+	if (!options || options->option == GMT_OPT_USAGE) Return (usage (API, GMT_USAGE));	/* Return the usage message */
+	if (options->option == GMT_OPT_SYNOPSIS) Return (usage (API, GMT_SYNOPSIS));		/* Return the synopsis */
 
 	/* Parse the commont GMT command-line options */
 	if (GMT_Parse_Common (API, GMT_PROG_OPTIONS, options)) Return (EXIT_FAILURE);
