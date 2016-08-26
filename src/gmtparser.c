@@ -86,12 +86,12 @@ int GMT_gmtparser (void *API, int mode, void *args) {
 	if (!options || options->option == GMT_OPT_USAGE) Return (usage (API, GMT_USAGE));	/* Return the usage message */
 	if (options->option == GMT_OPT_SYNOPSIS) Return (usage (API, GMT_SYNOPSIS));		/* Return the synopsis */
 
-	/* Parse the commont GMT command-line options */
+	/* Parse the given command GMT command-line options */
 	if (GMT_Parse_Common (API, GMT_PROG_OPTIONS, options)) Return (EXIT_FAILURE);
 
-	/* ---------------------------- This is the gmt_io main code ----------------------------*/
+	/* ---------------------------- This is the gmtparser main code ----------------------------*/
 
-	GMT_Message (API, GMT_TIME_CLOCK, "Enter various lengths, distances, coordinates, either one-by-one or comma/slash separated.  End with -:\n");
+	GMT_Message (API, GMT_TIME_CLOCK, "Enter various lengths, distances, coordinates, either one-by-one or comma/slash separated.  End with - (a single hyphen):\n");
 	while (scanf ("%s", input) == 1 && input[0]) {		/* As long as user provides input... */
 		if (!strcmp (input, "-")) break;		/* OK, the end signal */
 		ret = GMT_Get_Value (API, input, value);	/* Convert one or more strings to doubles */
@@ -106,7 +106,7 @@ int GMT_gmtparser (void *API, int mode, void *args) {
 	}
 	
 	GMT_Message (API, GMT_TIME_CLOCK, "These are the GMT common options and values you specified:\n");
-	for (k = 0; k < strlen (commons); k++) {	/* Check every common option */
+	for (k = 0; k < strlen (commons); k++) {	/* Check every common option this module knows about */
 		if ((ret = GMT_Get_Common (API, commons[k], value)) == -1) continue;
 		string[0] = commons[k];
 		report (string, ret, value);

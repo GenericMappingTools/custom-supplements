@@ -34,10 +34,8 @@
 #define THIS_MODULE_PURPOSE	"Block average (x,y,z) data tables by mean, median, or mode estimation"
 #define THIS_MODULE_KEYS	"<DI,>DO,RG-"
 
-#include "gmt.h"		/* Must include this to use GMT API */
-#include "gmt_synopsis.h"	/* Must include this to use the synopsis macros*/
+#include "gmt_dev.h"		/* Must include this to use GMT DEV API */
 #include "custom_version.h"	/* Must include this to use Custom_version */
-#include <string.h>
 
 #define GMT_PROG_OPTIONS "-:>RVabfghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
 
@@ -109,7 +107,7 @@ static int usage (void *API, int level)
 
 static int parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OPTION *options)
 {
-	/* This parses the options provided to gmtaverage and sets parameters in CTRL.
+	/* Parses the command line options provided to gmtaverage and sets parameters in CTRL.
 	 * Any GMT common options will override values set previously by other commands.
 	 * It also replaces any file names specified as input or output with the data ID
 	 * returned when registering these sources/destinations with the API.
@@ -209,7 +207,7 @@ int GMT_gmtaverage (void *API, int mode, void *args) {
 	
 	switch (t_ptr->arg[0]) {	/* Determine what GMT_block* module we need */
 		case 'm': case 'n': case 's': case 'w':	/* Call blockmean */
-			t_ptr->option = 'S';	/* Since blockmean uses -S, not -T to select type */
+			t_ptr->option = 'S';	/* Since blockmean uses -S, not -T to select output type */
 			module = "blockmean";
 			break;
 		case 'e':	/* Call blockmedian */

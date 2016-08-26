@@ -32,7 +32,7 @@
 #define THIS_MODULE_PURPOSE	"Create a grid, add a spike, filter it in frequency domain, and write output"
 #define THIS_MODULE_KEYS	"<GI,GGO,RG-"
 
-#define GMT_FFT_DIM	2	/* Dimension of FFT needed */
+#define MY_FFT_DIM	2	/* Dimension of FFT needed */
 #include "gmt.h"		/* All programs using the GMT API needs this */
 #include "custom_version.h"	/* Must include this to use Custom_version */
 
@@ -109,7 +109,7 @@ static int usage (void *API, int level)
 	GMT_Message (API, GMT_TIME_NONE, "\t-I To create a new grid, specify increments <xinc>[/<yinc>].\n");
 	/* All programs needing the GMT FFT machinery must display the FFT option. Call it N unless taken.
 	 * Pass the dimension of the FFT work (1 for tables, 2 for grids) */
-	GMT_FFT_Option (API, 'N', GMT_FFT_DIM, "Choose or inquire about suitable grid dimensions for FFT, and set modifiers:");
+	GMT_FFT_Option (API, 'N', MY_FFT_DIM, "Choose or inquire about suitable grid dimensions for FFT, and set modifiers:");
 	GMT_Message (API, GMT_TIME_NONE, "\t-R To create a new grid, specify region <xmin/xmax/ymin/ymax>.\n");
 	GMT_Message (API, GMT_TIME_NONE, "\t-r Select pixel registration for new grid.\n");
 
@@ -166,7 +166,7 @@ static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION
 				break;
 			case 'N':	/* Grid dimension setting or inquiery */
 				Ctrl->N.active = 1;
-				if ((Ctrl->N.info = GMT_FFT_Parse (API, 'N', GMT_FFT_DIM, opt->arg)) == NULL) n_errors ++;
+				if ((Ctrl->N.info = GMT_FFT_Parse (API, 'N', MY_FFT_DIM, opt->arg)) == NULL) n_errors ++;
 				break;
 			default:	/* Report bad options */
 				GMT_Message (API, GMT_TIME_NONE, "Syntax error: Unrecognized option %c%s\n", opt->option, opt->arg);
@@ -215,14 +215,14 @@ int GMT_grdfourier (void *API, int mode, void *args) {
 
 	/* ---------------------------- This is the grdfourier main code ----------------------------*/
 
-	rw_mode = GMT_GRID_ALL | GMT_GRID_IS_COMPLEX_REAL;	/* We want to place our grid in a complex form */
+	rw_mode = GMT_GRID_ALL | GMT_GRID_IS_COMPLEX_REAL;	/* Place our grid as the real component in a complex grid */
 	if (Ctrl->In.active) {	/* User specified an input grid file */
 		GMT_Message (API, GMT_TIME_CLOCK, "Read input grid from %s\n", Ctrl->In.file);
 		if ((Grid = GMT_Read_Data (API, GMT_IS_GRID, GMT_IS_FILE, GMT_IS_SURFACE, rw_mode, NULL, Ctrl->In.file, NULL)) == NULL)
 			Return (EXIT_FAILURE);
 	}
 	else {	/* Create an empty grid from current -R -I [-r] instead */
-		GMT_Message (API, GMT_TIME_CLOCK, "No grid provided, create new grid from current -R -I [-r] settings\n");
+		GMT_Message (API, GMT_TIME_CLOCK, "No grid provided, create an empty grid from current -R -I [-r] settings\n");
 		if ((Grid = GMT_Create_Data (API, GMT_IS_GRID, GMT_IS_SURFACE, rw_mode, NULL, NULL, NULL, \
 			GMT_GRID_DEFAULT_REG, 0, NULL)) == NULL) Return (EXIT_FAILURE);
 	}
@@ -244,9 +244,9 @@ int GMT_grdfourier (void *API, int mode, void *args) {
 	Grid->data[node] = 1.0;	/* The deadly spike */
 	GMT_Message (API, GMT_TIME_CLOCK, "Placed spike at %g, %g [col = %u, row = %u]\n", x[Ctrl->A.col], y[Ctrl->A.row], Ctrl->A.col, Ctrl->A.row);
 	
-	/* Initialize FFT structs, check for NaNs, detrend, save intermediate files, etc. per -N settings */
+	/* Initialize FFT structs, check for NaNs, detrend, save intermediate files, etc., per -N settings */
 	
-	FFT_info = GMT_FFT_Create (API, Grid, GMT_FFT_DIM, GMT_GRID_IS_COMPLEX_REAL, Ctrl->N.info);
+	FFT_info = GMT_FFT_Create (API, Grid, MY_FFT_DIM, GMT_GRID_IS_COMPLEX_REAL, Ctrl->N.info);
 	
 	switch (Ctrl->D.dir) {	/* Select which type of wavenumber to use */
 		case 'x': wn_mode = 0; break;
@@ -281,11 +281,9 @@ int GMT_grdfourier (void *API, int mode, void *args) {
 		Return (EXIT_FAILURE);
 	}
 
-	/* Free memory resources obtained via the API */
+	GMT_FFT_Destroy (API, &FFT_info);	/* Free the FFT machinery */
 
-	if (GMT_Destroy_Data (API, &x) != GMT_NOERROR) Return (EXIT_FAILURE);
-	if (GMT_Destroy_Data (API, &y) != GMT_NOERROR) Return (EXIT_FAILURE);
-	
-	/* Destroy options and let GMT garbage collection free used memory */
+	/* Destroy options and let GMT garbage collection free memory used byt the API */
+
 	Return (GMT_NOERROR);
 }

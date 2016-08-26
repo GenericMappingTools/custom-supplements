@@ -30,23 +30,19 @@
 #define THIS_MODULE_PURPOSE	"Make a Mercator color map from ETOPO 1, 2, or 5 arc min global relief grids"
 #define THIS_MODULE_KEYS	"CCi,>XO,RG-"
 
-#include "gmt.h"
-#include "gmt_synopsis.h"	/* Must include this to use the synopsis macros*/
+#include "gmt_dev.h"
 #include "custom_version.h"	/* Must include this to use Custom_version */
-#include <math.h>
-#include <string.h>
-#include <time.h>
 
-#define GMT_PROG_OPTIONS "->BKOPRUVXYcnptxy"
+#define MY_PROG_OPTIONS "->BKOPRUVXYcnptxy"
 
-#define MAP_BAR_GAP	"-30p"	/* Offset color bar 30 points below map */
+#define MAP_BAR_GAP	"36p"	/* Offset color bar 36 points below map */
 #define MAP_BAR_HEIGHT	"8p"	/* Height of color bar, if used */
-#define MAP_OFFSET	"125p"	/* Start map 125p from paper edge when colorbar is requested */
+#define MAP_OFFSET	"100p"	/* Start map 100p from paper edge when colorbar is requested */
 #define TOPO_INC	500.0	/* Build cpt in steps of 500 meters */
 
-enum GMT_enum_script {GMT_BASH_MODE = 0,	/* Write Bash script */
-	GMT_CSH_MODE,				/* Write C-shell script */
-	GMT_DOS_MODE};				/* Write DOS script */
+enum enum_script {BASH_MODE = 0,	/* Write Bash script */
+	CSH_MODE,				/* Write C-shell script */
+	DOS_MODE};				/* Write DOS script */
 	
 /* Control structure for gmtmercmap */
 
@@ -76,8 +72,8 @@ static void *New_Ctrl (unsigned int length_unit) {	/* Allocate and initialize a 
 	struct GMTMERCMAP_CTRL *C;
 
 	C = calloc (1, sizeof (struct GMTMERCMAP_CTRL));
-	C->C.file = strdup ("relief");
-	C->W.width = (length_unit == 0) ? 25.0 / 2.54 : 10.0;	/* 25cm (SI/A4) or 10i (US/Letter) */
+	C->C.file = strdup ("earth");
+	C->W.width = (length_unit == 0) ? 25.0 : ((length_unit == 1) ? 10.0 : 700);	/* 25cm (SI/A4) or 10i (US/Letter) or 700pt */
 	return (C);
 }
 
@@ -90,7 +86,7 @@ static void Free_Ctrl (struct GMTMERCMAP_CTRL *C) {	/* Deallocate control struct
 static int usage (void *API, unsigned int length_unit, int level)
 {
 	char width[4];
-	if (length_unit == 0) strcpy (width, "25c"); else strcpy (width, "10i");
+	if (length_unit == 0) strcpy (width, "25c"); else if (length_unit == 1) strcpy (width, "10i"); else strcpy (width, "700p");
 	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
 	GMT_Message (API, GMT_TIME_NONE, "usage: gmtmercmap [-C<cpt>] [-D[b|c|d]] [-E1|2|5] [-K] [-O] [-P]\n\t[%s] [-S] [%s] [%s]\n", GMT_R2_OPT, GMT_U_OPT, GMT_V_OPT);
@@ -125,7 +121,7 @@ static int parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OPTION *op
 	struct GMT_OPTION *opt = NULL;
 
 	for (opt = options; opt; opt = opt->next) {	/* Process all the options given */
-		if (strchr (GMT_PROG_OPTIONS, opt->option)) continue;	/* Common options already processed */
+		if (strchr (MY_PROG_OPTIONS, opt->option)) continue;	/* Common options already processed */
 
 		switch (opt->option) {
 			/* Processes program-specific parameters */
@@ -138,10 +134,10 @@ static int parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OPTION *op
 			case 'D':	/* Just issue equivalent GMT commands in a script */
 				Ctrl->D.active = 1;
 				switch (opt->arg[0]) {
-					case 'b':  Ctrl->D.mode = GMT_BASH_MODE; break;
-					case 'c':  Ctrl->D.mode = GMT_CSH_MODE;  break;
-					case 'd':  Ctrl->D.mode = GMT_DOS_MODE;  break;
-					default:   Ctrl->D.mode = GMT_BASH_MODE; break;
+					case 'b':  Ctrl->D.mode = BASH_MODE; break;
+					case 'c':  Ctrl->D.mode = CSH_MODE;  break;
+					case 'd':  Ctrl->D.mode = DOS_MODE;  break;
+					default:   Ctrl->D.mode = BASH_MODE; break;
 				}
 				break;
 			case 'E':	/* Select the ETOPO model to use */
@@ -171,51 +167,49 @@ static int parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OPTION *op
 	return (n_errors);
 }
 
-#define Return(code) {Free_Ctrl (Ctrl); return (code);}
-
 #define ETOPO1M_LIMIT 100	/* ETOPO1 cut-offs in degrees squared for 1 arc min */
 #define ETOPO2M_LIMIT 10000	/* ETOPO2 cut-offs in degrees squared for 2 arc min */
-
-double cm2unit[4] = {1.0, 1.0/2.54, 0.01, 72.0/2.54};
 
 static void set_var (int mode, char *name, char *value)
 {	/* Assigns the text variable given the script mode */
 	switch (mode) {
-		case GMT_BASH_MODE: printf ("%s=%s\n", name, value); break;
-		case GMT_CSH_MODE:  printf ("set %s = %s\n", name, value); break;
-		case GMT_DOS_MODE:  printf ("set %s=%s\n", name, value); break;
+		case BASH_MODE: printf ("%s=%s\n", name, value); break;
+		case CSH_MODE:  printf ("set %s = %s\n", name, value); break;
+		case DOS_MODE:  printf ("set %s=%s\n", name, value); break;
 	}
 }
 
 static void set_dim (int mode, unsigned int length_unit, char *name, double value)
 {	/* Assigns the double value given the script mode and prevailing measure unit [value is passed in inches] */
-	static char unit[4] = "cimp", text[256];
-	//double out = value * cm2unit[length_unit];
+	static char unit[3] = "cip", text[256];
 	double out = value;
 	sprintf (text, "%g%c", out, unit[length_unit]);
 	set_var (mode, name, text);
 }
 
-static char *get_var (int mode, char *name)
-{	/* Places this variable where needed in the script via the assignment static variable */
-	static char assignment[BUFSIZ];
-	if (mode == GMT_DOS_MODE)
-		sprintf (assignment, "%%%s%%", name);
+void place_var (int mode, char *name, unsigned int end)
+{	/* Prints this variable to stdout where needed in the script via the assignment static variable */
+	if (mode == DOS_MODE)
+		printf ("%%%s%%", name);
 	else
-		sprintf (assignment, "${%s}", name);
-	return (assignment);
+		printf ("${%s}", name);
+	if (end) putchar ('\n');
 }
 
+#define M_free_options(mode) {if (mode >= 0 && GMT_Destroy_Options (API, &options) != GMT_OK) exit (GMT_MEMORY_ERROR);}
+#define bailout(code) {M_free_options (mode); return (code);}
+#define Return(code) {Free_Ctrl (Ctrl); bailout (code);}
+
 int GMT_gmtmercmap (void *API, int mode, void *args) {
-	int error, min, z_ID, i_ID, c_ID, t_ID;
+	int error, min;
 	unsigned int B_active, K_active, O_active, P_active, X_active, Y_active;
-	unsigned int length_unit = 0;
+	unsigned int length_unit = 0;	/* cm */
 	
 	double area, z, z_min, z_max, wesn[4];
 	
 	char file[256], z_file[GMT_STR16], i_file[GMT_STR16];
 	char cmd[BUFSIZ], c_file[GMT_STR16], t_file[GMT_STR16], def_unit[16];
-	static char unit[4] = "cimp";
+	static char unit[3] = "cip";
 
 	struct GMT_GRID *G = NULL, *I = NULL;
 	struct GMT_PALETTE *P = NULL;
@@ -230,17 +224,16 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 	options = GMT_Create_Options (API, mode, args);	/* Set or get option list */
 
 	if (!options || options->option == GMT_OPT_USAGE) 
-		return (usage (API, length_unit, GMT_USAGE));		/* Return the usage message */
+		bailout (usage (API, length_unit, GMT_USAGE));		/* Return the usage message */
 	if (options && options->option == GMT_OPT_SYNOPSIS) 
-		return (usage (API, length_unit, GMT_SYNOPSIS));	/* Return the synopsis */
+		bailout (usage (API, length_unit, GMT_SYNOPSIS));	/* Return the synopsis */
 
 	/* Parse the common command-line arguments */
-	if (GMT_Parse_Common (API, GMT_PROG_OPTIONS, options)) return (EXIT_FAILURE);	/* Parse the common options */
+	if (GMT_Parse_Common (API, MY_PROG_OPTIONS, options)) return (EXIT_FAILURE);	/* Parse the common options */
 	GMT_Get_Default (API, "PROJ_LENGTH_UNIT", def_unit);
 	if (!strcmp (def_unit, "cm")) length_unit = 0;
 	else if (!strcmp (def_unit, "inch")) length_unit = 1;
-	else if (!strcmp (def_unit, "m")) length_unit = 2;
-	else if (!strcmp (def_unit, "point")) length_unit = 3;
+	else if (!strcmp (def_unit, "point")) length_unit = 2;
 
 	Ctrl = New_Ctrl (length_unit);	/* Allocate and initialize a new control structure */
 	if ((error = parse (API, Ctrl, options))) Return (error);
@@ -269,7 +262,7 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 		min = (area < ETOPO1M_LIMIT) ? 1 : ((area < ETOPO2M_LIMIT) ? 2 : 5);	/* Use etopo[1,2,5]m_grd.nc depending on area */
 	}
 
-	sprintf (file, "etopo%dm_grd.nc", min);	/* Make the selected file name and make sure it is accessible */
+	sprintf (file, "etopo%dm.nc", min);	/* Make the selected file name and make sure it is accessible */
 	if ((G = GMT_Read_Data (API, GMT_IS_GRID, GMT_IS_FILE, GMT_IS_SURFACE, GMT_GRID_HEADER_ONLY, NULL, file, NULL)) == NULL) {
 		GMT_Report (API, GMT_MSG_NORMAL, "Unable to locate file %s in the GMT search directories\n", file);
 		Return (EXIT_FAILURE);
@@ -284,21 +277,21 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 		time_t now = time (NULL);
 		
 		GMT_Report (API, GMT_MSG_VERBOSE, "Create % script that can be run to build the map\n", proc[Ctrl->D.mode]);
-		if (Ctrl->D.mode == GMT_DOS_MODE)	/* Don't know how to get process ID in DOS */
+		if (Ctrl->D.mode == DOS_MODE)	/* Don't know how to get process ID in DOS */
 			sprintf (prefix, "tmp");
 		else
 			sprintf (prefix, "/tmp/$$");
 			
 		switch (Ctrl->D.mode) {
-			case GMT_BASH_MODE: printf ("#!/bin/sh\n"); break;
-			case GMT_CSH_MODE:  printf ("#!/bin/csh\n"); break;
-			case GMT_DOS_MODE:  printf ("REM DOS script\n"); break;
+			case BASH_MODE: printf ("#!/bin/bash\n"); break;
+			case CSH_MODE:  printf ("#!/bin/csh\n"); break;
+			case DOS_MODE:  printf ("REM DOS script\n"); break;
 		}
 		printf ("%s Produced by gmtmercmap on %s%s\n", comment[Ctrl->D.mode], ctime (&now), comment[Ctrl->D.mode]);
 		
 		switch (Ctrl->D.mode) {	/* Deal with noclobber first */
-			case GMT_BASH_MODE: printf ("set +o noclobber\n"); break;
-			case GMT_CSH_MODE:  printf ("unset noclobber\n"); break;
+			case BASH_MODE: printf ("set +o noclobber\n"); break;
+			case CSH_MODE:  printf ("unset noclobber\n"); break;
 		}
 		printf ("%s------------------------------------------\n", comment[Ctrl->D.mode]);
 		printf ("%s %d. Set variables you may change later:\n", comment[Ctrl->D.mode], ++step);
@@ -311,14 +304,12 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 		printf ("%s Map width:\n", comment[Ctrl->D.mode]);
 		set_dim (Ctrl->D.mode, length_unit, "width", Ctrl->W.width);
 		printf ("%s Intensity of illumination:\n", comment[Ctrl->D.mode]);
-		set_var (Ctrl->D.mode, "intensity", "1");
+		set_var (Ctrl->D.mode, "intensity", "0.8");
 		printf ("%s Azimuth of illumination:\n", comment[Ctrl->D.mode]);
 		set_var (Ctrl->D.mode, "azimuth", "45");
 		printf ("%s Color table:\n", comment[Ctrl->D.mode]);
 		set_var (Ctrl->D.mode, "cpt", Ctrl->C.file);
 		if (Ctrl->S.active) {	/* Plot color bar so set variables */
-			printf ("%s Center position of color bar:\n", comment[Ctrl->D.mode]);
-			set_dim (Ctrl->D.mode, length_unit, "scale_pos", 0.5*Ctrl->W.width);
 			printf ("%s Vertical shift from map to top of color bar:\n", comment[Ctrl->D.mode]);
 			set_var (Ctrl->D.mode, "scale_shift", MAP_BAR_GAP);
 			printf ("%s Width of color bar:\n", comment[Ctrl->D.mode]);
@@ -330,26 +321,31 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 		}
 		printf ("%s------------------------------------------\n\n", comment[Ctrl->D.mode]);
 		printf ("%s %d. Extract grid subset:\n", comment[Ctrl->D.mode], ++step);
-		printf ("grdcut %s -R%s -G%s_topo.nc\n", file, get_var (Ctrl->D.mode, "region"), prefix);
+		printf ("gmt grdcut %s -G%s_topo.nc -R", file, prefix); place_var (Ctrl->D.mode, "region", 1);
 		printf ("%s %d. Compute intensity grid for artificial illumination:\n", comment[Ctrl->D.mode], ++step);
-		printf ("grdgradient %s_topo.nc -Nt%s -A%s -fg -G%s_int.nc\n", prefix, get_var (Ctrl->D.mode, "intensity"), get_var (Ctrl->D.mode, "azimuth"), prefix);
+		printf ("gmt grdgradient %s_topo.nc -fg -G%s_int.nc -Nt", prefix, prefix); place_var (Ctrl->D.mode, "intensity", 0);
+		printf (" -A"); place_var (Ctrl->D.mode, "azimuth", 1);
 		printf ("%s %d. Determine symmetric relief range and get suitable CPT file:\n", comment[Ctrl->D.mode], ++step);
 		switch (Ctrl->D.mode) {
-			case GMT_BASH_MODE: printf ("T_opt=`grdinfo %s_topo.nc -Ts%g`\n", prefix, TOPO_INC); break;
-			case GMT_CSH_MODE:  printf ("set T_opt = `grdinfo %s_topo.nc -Ts%g`\n", prefix, TOPO_INC); break;
-			case GMT_DOS_MODE: /* Must determine the grdinfo result directly */
-				if ((t_ID = GMT_Register_IO (API, GMT_IS_TEXTSET, GMT_IS_DUPLICATE, GMT_IS_NONE, GMT_OUT, NULL, T)) == GMT_NOTSET) exit (EXIT_FAILURE);
-				if (GMT_Encode_ID (API, t_file, t_ID) != GMT_NOERROR) exit (EXIT_FAILURE);	/* Make filename with embedded object ID */
-				sprintf (cmd, "%s -R%s -Ts%g ->%s", file, region, TOPO_INC, t_file);			/* The grdinfo command line */
+			case BASH_MODE: printf ("T_opt=`gmt grdinfo %s_topo.nc -T%g+s`\n", prefix, TOPO_INC); break;
+			case CSH_MODE:  printf ("set T_opt = `gmt grdinfo %s_topo.nc -T%g+s`\n", prefix, TOPO_INC); break;
+			case DOS_MODE: /* Must determine the grdinfo result directly */
+				if (GMT_Open_VirtualFile (API, GMT_IS_TEXTSET, GMT_IS_NONE, GMT_OUT, NULL, t_file) != GMT_NOERROR) exit (EXIT_FAILURE);
+				sprintf (cmd, "%s -R%s -T%g+s > %s", file, region, TOPO_INC, t_file);			/* The grdinfo command line */
 				if (GMT_Call_Module (API, "grdinfo", GMT_MODULE_CMD, cmd) != GMT_NOERROR) exit (EXIT_FAILURE);	/* This will return the -T<string> back via the T textset */
-				if ((T = GMT_Retrieve_Data (API, t_ID)) == NULL) exit (EXIT_FAILURE);	/* Get pointer to that container with the input textset */
-				printf ("set T_opt=%s\n", T->table[0]->segment[0]->record[0]);
-				printf ("makecpt -C%s %%T_opt%% -Z > %s_color.cpt\n", get_var (Ctrl->D.mode, "cpt"), prefix);
+				if ((T = GMT_Read_VirtualFile (API, t_file)) == NULL) exit (EXIT_FAILURE);	/* Get pointer to that container with the input textset */
+				printf ("set T_opt=%s\n", T->table[0]->segment[0]->data[0]);
+				printf ("gmt makecpt -C"); place_var (Ctrl->D.mode, "cpt", 0);
+				printf (" %%T_opt%% -Z > %s_color.cpt\n", prefix);
+				if (GMT_Close_VirtualFile (API,t_file) != GMT_NOERROR) exit (EXIT_FAILURE);
 				break;
 		}
-		if (Ctrl->D.mode != GMT_DOS_MODE) printf ("makecpt -C%s $T_opt -Z > %s_color.cpt\n", get_var (Ctrl->D.mode, "cpt"), prefix);
+		if (Ctrl->D.mode != DOS_MODE) {
+			printf ("gmt makecpt -C"); place_var (Ctrl->D.mode, "cpt", 0);
+			printf (" ${T_opt} -Z > %s_color.cpt\n", prefix);
+		}
 		printf ("%s %d. Make the color map:\n", comment[Ctrl->D.mode], ++step);
-		printf ("grdimage %s_topo.nc -I%s_int.nc -C%s_color.cpt -JM%s", prefix, prefix, prefix, get_var (Ctrl->D.mode, "width"));
+		printf ("gmt grdimage %s_topo.nc -I%s_int.nc -C%s_color.cpt -JM", prefix, prefix, prefix); place_var (Ctrl->D.mode, "width", 0);
 		if (!B_active)
 			printf (" -Ba -BWSne");	/* Add default frame annotation */
 		else {	/* Loop over arguments and find all -B options */
@@ -361,17 +357,18 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 		if (Ctrl->S.active || K_active) printf (" -K");	/* Either gave -K or implicit via -S */
 		if (!X_active && !O_active) printf (" -Xc");	/* User gave neither -X nor -O so we center the map */
 		if (Ctrl->S.active) {	/* May need to add some vertical offset to account for the color scale */
-			if (!Y_active && !K_active) printf (" -Y%s", get_var (Ctrl->D.mode, "map_offset"));	/* User gave neither -K nor -Y so we add 0.75i offset to fit the scale */
+			if (!Y_active && !K_active) printf (" -Y"), place_var (Ctrl->D.mode, "map_offset", 0);	/* User gave neither -K nor -Y so we add 0.75i offset to fit the scale */
 		}
-		printf (" > %s\n", get_var (Ctrl->D.mode, "map"));
+		printf (" > "); place_var (Ctrl->D.mode, "map", 1);
 		if (Ctrl->S.active) {	/* Plot color bar centered beneath map */
 			printf ("%s %d. Overlay color scale:\n", comment[Ctrl->D.mode], ++step);
-			printf ("psscale -C%s_color.cpt -D%s/%s/%s/%sh -Bxa -By+lm -O", prefix, get_var (Ctrl->D.mode, "scale_pos"), get_var (Ctrl->D.mode, "scale_shift"), get_var (Ctrl->D.mode, "scale_width"), get_var (Ctrl->D.mode, "scale_height"));	/* The psscale command line */
+			printf ("gmt psscale -C%s_color.cpt -R -J -Bxa -By+lm -O -DJCB+w", prefix); place_var (Ctrl->D.mode, "scale_width", 0);	putchar ('/');	place_var (Ctrl->D.mode, "scale_height", 0);
+			printf ("+h+o0/"); place_var (Ctrl->D.mode, "scale_shift", 0);	/* The psscale command line */
 			if (K_active) printf (" -K");		/* Add optional user options */
-			printf (" >> %s\n", get_var (Ctrl->D.mode, "map"));
+			printf (" >> "); place_var (Ctrl->D.mode, "map", 1);
 		}
 		printf ("%s %d. Remove temporary files:\n", comment[Ctrl->D.mode], ++step);
-		if (Ctrl->D.mode == GMT_DOS_MODE) printf ("del %s_*.*\n", prefix); else printf ("rm -f %s_*\n", prefix);
+		if (Ctrl->D.mode == DOS_MODE) printf ("del %s_*.*\n", prefix); else printf ("rm -f %s_*\n", prefix);
 		Return (EXIT_SUCCESS);
 	}
 	
@@ -390,14 +387,13 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 	
 	GMT_Report (API, GMT_MSG_VERBOSE, "Compute artificial illumination grid from %s\n", file);
 	/* Register the topography as read-only input and register the output intensity surface to a memory location */
-	if ((z_ID = GMT_Register_IO (API, GMT_IS_GRID, GMT_IS_REFERENCE|GMT_IO_RESET, GMT_IS_SURFACE, GMT_IN, NULL, G)) == GMT_NOTSET) Return (EXIT_FAILURE);
-	if ((i_ID = GMT_Register_IO (API, GMT_IS_GRID, GMT_IS_REFERENCE, GMT_IS_SURFACE, GMT_OUT, NULL, NULL)) == GMT_NOTSET) Return (EXIT_FAILURE);
-	if (GMT_Encode_ID (API, z_file, z_ID) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Make filename with embedded object ID */
-	if (GMT_Encode_ID (API, i_file, i_ID) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Make filename with embedded object ID */
+	if (GMT_Open_VirtualFile (API, GMT_IS_GRID, GMT_IS_SURFACE, GMT_IN,     G, z_file) != GMT_NOERROR) exit (EXIT_FAILURE);
+	if (GMT_Open_VirtualFile (API, GMT_IS_GRID, GMT_IS_SURFACE, GMT_OUT, NULL, i_file) != GMT_NOERROR) exit (EXIT_FAILURE);
 	memset (cmd, 0, BUFSIZ);
-	sprintf (cmd, "%s -G%s -Nt1 -A45 -fg", z_file, i_file);			/* The grdgradient command line */
+	sprintf (cmd, "%s -G%s -Nt0.8 -A45 -fg", z_file, i_file);			/* The grdgradient command line */
 	if (GMT_Call_Module (API, "grdgradient", GMT_MODULE_CMD, cmd) != GMT_NOERROR) Return (EXIT_FAILURE);	/* This will write the intensity grid to an internal allocated container */
-	if ((I = GMT_Retrieve_Data (API, i_ID)) == NULL) Return (EXIT_FAILURE);	/* Get pointer to that container with the output grid */
+	if ((I = GMT_Read_VirtualFile (API, i_file)) == NULL) Return (EXIT_FAILURE);	/* Get the intensity grid */
+	if (GMT_Close_VirtualFile (API, i_file) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Done with this virtual file */
 	
 	/* 5. Determine a reasonable color range based on TOPO_INC m intervals and retrieve a CPT */
 	
@@ -408,23 +404,20 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 	z = fabs (z_min);
 	if (fabs (z_max) > z) z = fabs (z_max);	/* Make it symmetrical about zero */
 	/* Register the output CPT file to a memory location */
-	if ((c_ID = GMT_Register_IO (API, GMT_IS_CPT, GMT_IS_REFERENCE, GMT_IS_NONE, GMT_OUT, NULL, NULL)) == GMT_NOTSET) Return (EXIT_FAILURE);
-	if (GMT_Encode_ID (API, c_file, c_ID) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Make filename with embedded object ID */
+	if (GMT_Open_VirtualFile (API, GMT_IS_PALETTE, GMT_IS_NONE, GMT_OUT, NULL, c_file) != GMT_NOERROR) exit (EXIT_FAILURE);
 	memset (cmd, 0, BUFSIZ);
 	sprintf (cmd, "-C%s -T%g/%g/%g -Z ->%s", Ctrl->C.file, -z, z, TOPO_INC, c_file);	/* The makecpt command line */
 	if (GMT_Call_Module (API, "makecpt", GMT_MODULE_CMD, cmd) != GMT_NOERROR) Return (EXIT_FAILURE);	/* This will write the output CPT to memory */
-	if ((P = GMT_Retrieve_Data (API, c_ID)) == NULL) Return (EXIT_FAILURE);	/* Get pointer to the CPT stored in the allocated memory */
+	if ((P = GMT_Read_VirtualFile (API, c_file)) == NULL) Return (EXIT_FAILURE);	/* Get the CPT */
+	if (GMT_Close_VirtualFile (API, c_file) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Done with this virtual file */
 	
 	/* 6. Now make the map */
 	
 	GMT_Report (API, GMT_MSG_VERBOSE, "Generate the Mercator map\n");
 	/* Register the three input sources (2 grids and 1 CPT); output is PS that goes to stdout */
-	if ((z_ID = GMT_Register_IO (API, GMT_IS_GRID, GMT_IS_REFERENCE|GMT_IO_RESET, GMT_IS_SURFACE, GMT_IN, NULL, G)) == GMT_NOTSET) Return (EXIT_FAILURE);
-	if (GMT_Encode_ID (API, z_file, z_ID) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Make filename with embedded object ID */
-	if ((i_ID = GMT_Register_IO (API, GMT_IS_GRID, GMT_IS_REFERENCE|GMT_IO_RESET, GMT_IS_SURFACE, GMT_IN, NULL, I)) == GMT_NOTSET) Return (EXIT_FAILURE);
-	if (GMT_Encode_ID (API, i_file, i_ID) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Make filename with embedded object ID */
-	if ((c_ID = GMT_Register_IO (API, GMT_IS_CPT, GMT_IS_REFERENCE|GMT_IO_RESET, GMT_IS_NONE, GMT_IN, NULL, P)) == GMT_NOTSET) Return (EXIT_FAILURE);
-	if (GMT_Encode_ID (API, c_file, c_ID) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Make filename with embedded object ID */
+	if (GMT_Init_VirtualFile (API, 0, z_file) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Reset the grid for reading again */
+	if (GMT_Open_VirtualFile (API, GMT_IS_GRID, GMT_IS_SURFACE, GMT_IN, I, i_file) != GMT_NOERROR) exit (EXIT_FAILURE);
+	if (GMT_Open_VirtualFile (API, GMT_IS_PALETTE, GMT_IS_NONE, GMT_IN, P, c_file) != GMT_NOERROR) exit (EXIT_FAILURE);
 	memset (cmd, 0, BUFSIZ);
 	sprintf (cmd, "%s -I%s -C%s -JM%g%c -Ba -BWSne", z_file, i_file, c_file, Ctrl->W.width, unit[length_unit]);	/* The grdimage command line */
 	if (O_active) strcat (cmd, " -O");	/* Add optional user options */
@@ -439,16 +432,17 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 	/* 7. Plot the optional color scale */
 	
 	if (Ctrl->S.active) {
-		double x = 0.5 * Ctrl->W.width;	/* Centered beneath the map in these units */
 		GMT_Report (API, GMT_MSG_VERBOSE, "Append color scale bar\n");
 		/* Register the CPT to be used by psscale */
-		if ((c_ID = GMT_Register_IO (API, GMT_IS_CPT, GMT_IS_REFERENCE|GMT_IO_RESET, GMT_IS_NONE, GMT_IN, NULL, P)) == GMT_NOTSET) Return (EXIT_FAILURE);
-		if (GMT_Encode_ID (API, c_file, c_ID) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Make filename with embedded object ID */
+		if (GMT_Init_VirtualFile (API, 0, c_file) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Reset the CPT for reading again */
 		memset (cmd, 0, BUFSIZ);
-		sprintf (cmd, "-C%s -D%g%c/%s/%g%c/%sh -Bxa -By+lm -O", c_file, x, unit[length_unit], MAP_BAR_GAP, 0.9*Ctrl->W.width, unit[length_unit], MAP_BAR_HEIGHT);	/* The psscale command line */
+		sprintf (cmd, "-C%s -R -J -DJCB+w%g%c/%s+h+o0/%s -Bxa -By+lm -O", c_file, 0.9*Ctrl->W.width, unit[length_unit], MAP_BAR_HEIGHT, MAP_BAR_GAP);	/* The psscale command line */
 		if (K_active) strcat (cmd, " -K");		/* Add optional user options */
 		if (GMT_Call_Module (API, "psscale", GMT_MODULE_CMD, cmd) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Place the color bar */
 	}
+	if (GMT_Close_VirtualFile (API, z_file) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Done with this virtual file */
+	if (GMT_Close_VirtualFile (API, i_file) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Done with this virtual file */
+	if (GMT_Close_VirtualFile (API, c_file) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Done with this virtual file */
 	
 	/* 8. Let the GMT API garbage collection free the memory used */
 	GMT_Report (API, GMT_MSG_VERBOSE, "Mapping completed\n");

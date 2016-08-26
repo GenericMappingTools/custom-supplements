@@ -172,8 +172,8 @@ cat << EOF >> ${FILE_CUSTOM_MODULE_C}
 #include "${FILE_CUSTOM_MODULE_H}"
 #include <string.h>
 
-#ifndef GMT_UNUSED
-#define GMT_UNUSED(x) (void)(x)
+#ifndef gmt_M_unused
+#define gmt_M_unused(x) (void)(x)
 #endif
 EOF
 cat << EOF >> ${FILE_CUSTOM_MODULE_C}
@@ -236,7 +236,7 @@ cat << EOF >> ${FILE_CUSTOM_MODULE_C}
 /* Produce single list on stdout of all GMT ${LIB} module names for gmt --show-modules */
 void gmt_${LIB}_module_list_all (void *API) {
 	unsigned int module_id = 0;
-	GMT_UNUSED(API);
+	gmt_M_unused(API);
 	while (g_${L_TAG}_module[module_id].name != NULL) {
 		printf ("%s\n", g_${L_TAG}_module[module_id].name);
 		++module_id;
@@ -246,7 +246,7 @@ void gmt_${LIB}_module_list_all (void *API) {
 /* Lookup module id by name, return option keys pointer (for external API developers) */
 const char *gmt_${L_TAG}_module_info (void *API, char *candidate) {
 	int module_id = 0;
-	GMT_UNUSED(API);
+	gmt_M_unused(API);
 
 	/* Match actual_name against g_module[module_id].name */
 	while (g_${L_TAG}_module[module_id].name != NULL &&
