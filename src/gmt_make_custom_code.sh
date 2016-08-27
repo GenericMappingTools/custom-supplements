@@ -2,7 +2,7 @@
 #
 # $Id$
 #
-# Copyright (c) 2012-2015
+# Copyright (c) 2012-2016
 # by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis, and F. Wobbe
 # See LICENSE.TXT file for copying and redistribution conditions.
 #
@@ -191,7 +191,7 @@ EOF
 
 cat << EOF >> ${FILE_CUSTOM_MODULE_C}
 
-struct Gmt_moduleinfo g_${L_TAG}_module[] = {
+static struct Gmt_moduleinfo g_${L_TAG}_module[] = {
 EOF
 
 # $1 = name, $2 = ${L_TAG}, $3 = tab, $4 = purpose, $5 = tab, $6 = keys
