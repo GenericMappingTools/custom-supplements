@@ -31,10 +31,10 @@ if [ "X$1" = "X" ]; then
 	the GMT_Encode_Options API function used by developers of any
 	external APIs, such as MATLAB, Julia, Python, and others.
 	
-	<TAG> is thr developers name for the custom shared plugin and the
+	<TAG> is the developers name for the custom shared plugin and the
 	name is obtained from project statement in the top-level CMakeLists.txt.
 
-	Run this script with no arguments and it will create two files:
+	Run this script with the <TAG> as arguments and it will create two files:
 	
 		gmt_<TAG>_module.h.
 		gmt_<TAG>_module.c.
