@@ -145,7 +145,7 @@ static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION
 				Ctrl->A.active = 1;
 				if ((ret = GMT_Get_Value (API, opt->arg, value)) == 2) {
 					Ctrl->A.row = (unsigned int)value[0];
-					Ctrl->A.row = (unsigned int)value[1];
+					Ctrl->A.col = (unsigned int)value[1];
 				}
 				else {
 					GMT_Message (API, GMT_TIME_NONE, "Syntax error: Must give row/col pair\n");
