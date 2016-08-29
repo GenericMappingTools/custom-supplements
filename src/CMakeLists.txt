@@ -41,6 +41,8 @@ endif (WIN32)
 message (STATUS "Searching dependent libraries. This may take a few minutes...")
 find_package (GMT REQUIRED)
 include_directories (${GMT_INCLUDE_DIR})
+find_package (NETCDF REQUIRED)
+include_directories (${NETCDF_INCLUDE_DIR})
 
 find_package (GDAL)
 if (GDAL_FOUND)
