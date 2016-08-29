@@ -86,13 +86,13 @@ static void Free_Ctrl (struct GMTMERCMAP_CTRL *C) {	/* Deallocate control struct
 }
 
 static int usage (void *API, unsigned int length_unit, int level) {
-	char width[4];
+	char width[8];
 	if (length_unit == 0)
 		strcpy (width, "25c");
 	else if (length_unit == 1)
 		strcpy (width, "10i");
 	else
-		strncpy (width, "700p", 4);
+		strcpy (width, "700p");
 	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
 	GMT_Message (API, GMT_TIME_NONE, "usage: gmtmercmap [-C<cpt>] [-D[b|c|d]] [-E1|2|5] [-K] [-O] [-P]\n\t[%s] [-S] [%s] [%s]\n", GMT_R2_OPT, GMT_U_OPT, GMT_V_OPT);
