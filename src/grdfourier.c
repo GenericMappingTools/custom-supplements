@@ -44,6 +44,8 @@
 #endif
 #define GMT_PROG_OPTIONS	"-VRIfr"	/* List the GMT options your program may need */
 
+EXTERN_MSC int GMT_grdfourier (void *API, int mode, void *args);
+
 struct GMT_GRDFOURIER_CTRL {	/* Here is where you collect your programs specific options */
 	struct In {	/* Input grid file */
 		unsigned int active;	/* 1 if this option was specified */
@@ -91,8 +93,8 @@ static void Free_Ctrl (void *API, struct GMT_GRDFOURIER_CTRL *C) {	/* Free memor
 	free (C);	
 }
 
-static int usage (void *API, int level)
-{	/* Specifies the full usage message from the program when no argument are given */
+static int usage (void *API, int level) {
+	/* Specifies the full usage message from the program when no argument are given */
 	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
 	GMT_Message (API, GMT_TIME_NONE, "usage: grdfourier -G<outgrid> [<ingrid> ][-I<xinc>[/<yinc>]] \n");
@@ -116,8 +118,7 @@ static int usage (void *API, int level)
 	return (EXIT_FAILURE);
 }
 
-static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION *options)
-{
+static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION *options) {
 	/* This parses the options provided to grdfourier and sets parameters in Ctrl.
 	 * Note: Ctrl has already been initialized and non-zero default values set.
 	 * Any GMT common options will override values set previously by other commands.

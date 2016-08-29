@@ -40,6 +40,8 @@
 #define MAP_OFFSET	"100p"	/* Start map 100p from paper edge when colorbar is requested */
 #define TOPO_INC	500.0	/* Build cpt in steps of 500 meters */
 
+EXTERN_MSC int GMT_gmtmercmap (void *API, int mode, void *args);
+
 enum enum_script {BASH_MODE = 0,	/* Write Bash script */
 	CSH_MODE,				/* Write C-shell script */
 	DOS_MODE};				/* Write DOS script */

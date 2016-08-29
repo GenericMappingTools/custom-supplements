@@ -36,8 +36,10 @@
 
 #define GMT_PROG_OPTIONS	"-BIJKOPRUVXYafghinorst"	/* All the GMT common options */
 
-static int usage (void *API, int level)
-{	/* Specifies the full usage message from the program when no argument are given */
+EXTERN_MSC int GMT_gmtparser (void *API, int mode, void *args);
+
+static int usage (void *API, int level) {
+	/* Specifies the full usage message from the program when no argument are given */
 	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
 	GMT_Message (API, GMT_TIME_NONE, "usage: gmtparser [<any number of the GMT common options>]\n\n");
@@ -61,8 +63,7 @@ static int usage (void *API, int level)
 	return (EXIT_FAILURE);
 }
 
-static void report (char *name, int count, double par[])
-{
+static void report (char *name, int count, double par[]) {
 	int k;
 	fprintf (stderr, "Got %s: ret = %d", name, count);
 	if (count) fprintf (stderr, "\tValues:");

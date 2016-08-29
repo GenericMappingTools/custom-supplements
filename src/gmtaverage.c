@@ -39,6 +39,8 @@
 
 #define GMT_PROG_OPTIONS "-:>RVabfghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
 
+EXTERN_MSC int GMT_gmtaverage (void *API, int mode, void *args);
+
 struct GMTAVERAGE_CTRL {	/* All local control options for this program (except common args) */
 	struct E {	/* -E[b] */
 		unsigned int active;
@@ -64,8 +66,7 @@ static void Free_Ctrl (struct GMTAVERAGE_CTRL *C) {	/* Deallocate control struct
 	free ((void *)C);	
 }
 
-static int usage (void *API, int level)
-{
+static int usage (void *API, int level) {
 	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
 	GMT_Message (API, GMT_TIME_NONE, "usage: gmtaverage [<table>] %s -Te|m|n|o|s|w|<q>\n", GMT_I_OPT);
@@ -105,8 +106,7 @@ static int usage (void *API, int level)
 	return (EXIT_FAILURE);
 }
 
-static int parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OPTION *options)
-{
+static int parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OPTION *options) {
 	/* Parses the command line options provided to gmtaverage and sets parameters in CTRL.
 	 * Any GMT common options will override values set previously by other commands.
 	 * It also replaces any file names specified as input or output with the data ID
