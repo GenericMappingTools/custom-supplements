@@ -85,16 +85,16 @@ endif (HAVE_M_LIBRARY)
 set_target_properties (customlib
 	PROPERTIES
 	OUTPUT_NAME ${CMAKE_PROJECT_NAME}
-	RUNTIME_OUTPUT_NAME ${CMAKE_PROJECT_NAME}
+	PREFIX "${LIB_PREFIX}"
+	IMPORT_PREFIX "${LIB_PREFIX}"
 	LIBRARY_OUTPUT_DIRECTORY plugins
 	RUNTIME_OUTPUT_DIRECTORY plugins
-	PREFIX ""
 	LINK_FLAGS "${USER_CUSTOMLIB_LINK_FLAGS}"
 	DEFINE_SYMBOL "LIBRARY_EXPORTS")
 
 # If a renaming of the custom dll has been set in ConfigUser.cmake
-if (WIN32 AND CUSTOM_CUSTOM_RENAME)
-	set_target_properties (customlib PROPERTIES RUNTIME_OUTPUT_NAME ${CUSTOM_CUSTOM_RENAME})
+if (WIN32 AND CUSTOM_DLL_RENAME)
+	set_target_properties (customlib PROPERTIES RUNTIME_OUTPUT_NAME ${CUSTOM_DLL_RENAME})
 endif ()
 
 configure_file (custom_version.h.in custom_version.h)
