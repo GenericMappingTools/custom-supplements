@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------
- *	$Id: gmtmercmap.c 11801 2013-06-24 21:19:31Z pwessel $
+ *	$Id$
  *
  *	Copyright (c) 1991-2017 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
@@ -17,7 +17,7 @@
  *--------------------------------------------------------------------*/
 /*
  * Author:	Paul Wessel
- * Date:	15-JAN-2015
+ * Date:	5-MAY-2017
  * Version:	5 API
  *
  * Brief synopsis: gmtmercmap will make a nice Mercator map using etopo[1|2|5].
@@ -265,10 +265,10 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 		min = Ctrl->E.mode;
 	else {	/* Determine resolution automatically from map area */
 		area = (wesn[GMT_XHI] - wesn[GMT_XLO]) * (wesn[GMT_YHI] - wesn[GMT_YLO]);
-		min = (area < ETOPO1M_LIMIT) ? 1 : ((area < ETOPO2M_LIMIT) ? 2 : 5);	/* Use etopo[1,2,5]m_grd.nc depending on area */
+		min = (area < ETOPO1M_LIMIT) ? 1 : ((area < ETOPO2M_LIMIT) ? 2 : 5);	/* Use earth_relief_[1,2,5]m.grd depending on area */
 	}
 
-	sprintf (file, "etopo%dm.nc", min);	/* Make the selected file name and make sure it is accessible */
+	sprintf (file, "earth_relief_%2.2dm.grd", min);	/* Make the selected file name and make sure it is accessible */
 	if ((G = GMT_Read_Data (API, GMT_IS_GRID, GMT_IS_FILE, GMT_IS_SURFACE, GMT_GRID_HEADER_ONLY, NULL, file, NULL)) == NULL) {
 		GMT_Report (API, GMT_MSG_NORMAL, "Unable to locate file %s in the GMT search directories\n", file);
 		Return (EXIT_FAILURE);
@@ -342,13 +342,13 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 				if ((T = GMT_Read_VirtualFile (API, t_file)) == NULL) exit (EXIT_FAILURE);	/* Get pointer to that container with the input textset */
 				printf ("set T_opt=%s\n", T->table[0]->segment[0]->data[0]);
 				printf ("gmt makecpt -C"); place_var (Ctrl->D.mode, "cpt", 0);
-				printf (" %%T_opt%% -Z > %s_color.cpt\n", prefix);
+				printf (" %%T_opt%% > %s_color.cpt\n", prefix);
 				if (GMT_Close_VirtualFile (API,t_file) != GMT_NOERROR) exit (EXIT_FAILURE);
 				break;
 		}
 		if (Ctrl->D.mode != DOS_MODE) {
 			printf ("gmt makecpt -C"); place_var (Ctrl->D.mode, "cpt", 0);
-			printf (" ${T_opt} -Z > %s_color.cpt\n", prefix);
+			printf (" ${T_opt} > %s_color.cpt\n", prefix);
 		}
 		printf ("%s %d. Make the color map:\n", comment[Ctrl->D.mode], ++step);
 		printf ("gmt grdimage %s_topo.nc -I%s_int.nc -C%s_color.cpt -JM", prefix, prefix, prefix); place_var (Ctrl->D.mode, "width", 0);
@@ -412,7 +412,7 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 	/* Register the output CPT file to a memory location */
 	if (GMT_Open_VirtualFile (API, GMT_IS_PALETTE, GMT_IS_NONE, GMT_OUT, NULL, c_file) != GMT_NOERROR) exit (EXIT_FAILURE);
 	memset (cmd, 0, BUFSIZ);
-	sprintf (cmd, "-C%s -T%g/%g/%g -Z ->%s", Ctrl->C.file, -z, z, TOPO_INC, c_file);	/* The makecpt command line */
+	sprintf (cmd, "-C%s -T%g/%g ->%s", Ctrl->C.file, -z, z, c_file);	/* The makecpt command line */
 	if (GMT_Call_Module (API, "makecpt", GMT_MODULE_CMD, cmd) != GMT_NOERROR) Return (EXIT_FAILURE);	/* This will write the output CPT to memory */
 	if ((P = GMT_Read_VirtualFile (API, c_file)) == NULL) Return (EXIT_FAILURE);	/* Get the CPT */
 	if (GMT_Close_VirtualFile (API, c_file) != GMT_NOERROR) Return (EXIT_FAILURE);	/* Done with this virtual file */

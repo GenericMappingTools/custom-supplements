@@ -6,7 +6,7 @@ via the main gmt executable, just like the standard and official
 supplemental GMT modules.  It is required that you have installed
 GMT > 5.2 and made it your active GMT version before proceeding.
 
-Paul Wessel, February 18, 2017
+Paul Wessel, May 5, 2017
 
 1.  Decide what your plugin library name should be.  This is a short
     single word that determines the plugin name, e.g., "custom".

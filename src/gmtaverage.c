@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------------
- *    $Id: gmtaverage.c 11801 2013-06-24 21:19:31Z pwessel $
+ *    $Id$
  *
  *	Copyright (c) 1991-2017 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis and F. Wobbe
  *	See LICENSE.TXT file for copying and redistribution conditions.
@@ -20,7 +20,7 @@
  * data averageing modules GMT_blockmean|median|mode.
  *
  * Author:	Paul Wessel
- * Date:	15-JAN-2015
+ * Date:	5-MAY-2016
  * Version:	5 API
  *
  * Brief synopsis: reads records of x, y, data, [weight] and writes out one (or no)
@@ -37,7 +37,7 @@
 #include "gmt_dev.h"		/* Must include this to use GMT DEV API */
 #include "custom_version.h"	/* Must include this to use Custom_version */
 
-#define GMT_PROG_OPTIONS "-:>RVabfghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
+#define GMT_PROG_OPTIONS "-:>RVabdefghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
 
 EXTERN_MSC int GMT_gmtaverage (void *API, int mode, void *args);
 
@@ -70,8 +70,8 @@ static int usage (void *API, int level) {
 	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
 	GMT_Message (API, GMT_TIME_NONE, "usage: gmtaverage [<table>] %s -Te|m|n|o|s|w|<q>\n", GMT_I_OPT);
-	GMT_Message (API, GMT_TIME_NONE, "\t%s [-C] [-E[b]] [-Q] [%s] [-W[i][o]]\n\t[%s] [%s] [%s]\n\t[%s]\n\t[%s]\n\t[%s] [%s] [%s]\n\n",
-		GMT_R2_OPT, GMT_V_OPT, GMT_a_OPT, GMT_b_OPT, GMT_f_OPT, GMT_h_OPT, GMT_i_OPT, GMT_o_OPT, GMT_r_OPT, GMT_colon_OPT);
+	GMT_Message (API, GMT_TIME_NONE, "\t%s [-C] [-E[b]] [-Q] [%s] [-W[i][o]]\n\t[%s] [%s] [%s]\n\t[%s] [%s] [%s]\n\t[%s]\n\t[%s] [%s] [%s]\n\n",
+		GMT_R2_OPT, GMT_V_OPT, GMT_a_OPT, GMT_b_OPT, GMT_d_OPT, GMT_e_OPT, GMT_f_OPT, GMT_h_OPT, GMT_i_OPT, GMT_o_OPT, GMT_r_OPT, GMT_colon_OPT);
 
 	if (level == GMT_SYNOPSIS) return (EXIT_FAILURE);
 
@@ -101,7 +101,7 @@ static int usage (void *API, int level) {
 	GMT_Message (API, GMT_TIME_NONE, "\t   -W with no modifier has both weighted Input and Output; Default is no weights used.\n");
 	GMT_Option (API, "a,bi");
 	GMT_Message (API, GMT_TIME_NONE, "\t   Default is 3 columns (or 4 if -W is set).\n");
-	GMT_Option (API, "bo,f,h,i,o,r,:,.");
+	GMT_Option (API, "bo,d,e,f,h,i,o,r,:,.");
 	
 	return (EXIT_FAILURE);
 }

@@ -17,7 +17,7 @@
  *--------------------------------------------------------------------*/
 /*
  * Author:	Paul Wessel
- * Date:	15-JAN-2015
+ * Date:	5-MAY-2017
  * Version:	5 API
  *
  *  Brief synopsis: gmtparser tests API conversions, common settings,
@@ -34,7 +34,7 @@
 #include "custom_version.h"	/* Must include this to use Custom_version */
 #include <string.h>
 
-#define GMT_PROG_OPTIONS	"-BIJKOPRUVXYafghinorst"	/* All the GMT common options */
+#define GMT_PROG_OPTIONS	"-BIJKOPRUVXYadefghinorst"	/* All the GMT common options */
 
 EXTERN_MSC int GMT_gmtparser (void *API, int mode, void *args);
 

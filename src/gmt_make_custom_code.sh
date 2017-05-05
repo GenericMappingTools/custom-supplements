@@ -93,7 +93,7 @@ echo "gmt_make_custom_code.sh: Generate ${FILE_CUSTOM_MODULE_H}" >&2
 cat << EOF > ${FILE_CUSTOM_MODULE_H}
 /* \$Id\$
  *
- * Copyright (c) ${COPY_YEAR} by $USER
+ * Copyright (c) 2016-${COPY_YEAR} by $USER
  * See LICENSE.TXT file for copying and redistribution conditions.
  */
 
@@ -142,7 +142,7 @@ echo "gmt_make_custom_code.sh: Generate ${FILE_CUSTOM_MODULE_C}" >&2
 cat << EOF > ${FILE_CUSTOM_MODULE_C}
 /* \$Id\$
  *
- * Copyright (c) ${COPY_YEAR} by $USER
+ * Copyright (c) 2016-${COPY_YEAR} by $USER
  * See LICENSE.TXT file for copying and redistribution conditions.
  */
 

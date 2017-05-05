@@ -1,5 +1,5 @@
 #
-# $Id: CMakeLists.txt 11838 2013-06-28 06:49:32Z pwessel $
+# $Id$
 #
 # Copyright (c) 1991-2017 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis, and F. Wobbe
 # See LICENSE.TXT file for copying and redistribution conditions.
@@ -43,6 +43,8 @@ find_package (GMT REQUIRED)
 include_directories (${GMT_INCLUDE_DIR})
 find_package (NETCDF REQUIRED)
 include_directories (${NETCDF_INCLUDE_DIR})
+find_package (CURL REQUIRED)
+include_directories (${CURL_INCLUDE_DIR})
 
 find_package (GDAL)
 if (GDAL_FOUND)

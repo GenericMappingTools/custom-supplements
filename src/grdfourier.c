@@ -17,7 +17,7 @@
  *--------------------------------------------------------------------*/
 /*
  * Author:	Paul Wessel
- * Date:	15-JAN-2015
+ * Date:	5-MAY-2017
  * Version:	5 API
  *
  *  Brief synopsis: grdfourier.c is a dummy program to show how a
