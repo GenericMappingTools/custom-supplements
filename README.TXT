@@ -4,7 +4,7 @@ This README file explains the various steps you must take to design
 and successfully build a custom plugin library that can be accessed
 via the main gmt executable, just like the standard and official
 supplemental GMT modules.  It is required that you have installed
-GMT > 5.2 and made it your active GMT version before proceeding.
+GMT >= 6 and made it your active GMT version before proceeding.
 
 Paul Wessel, May 5, 2017
 

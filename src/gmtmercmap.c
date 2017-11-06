@@ -219,7 +219,7 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 
 	struct GMT_GRID *G = NULL, *I = NULL;
 	struct GMT_PALETTE *P = NULL;
-	struct GMT_TEXTSET *T = NULL;
+	struct GMT_DATASET *T = NULL;
 	struct GMTMERCMAP_CTRL *Ctrl = NULL;
 	struct GMT_OPTION *options = NULL;
 
@@ -336,11 +336,11 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 			case BASH_MODE: printf ("T_opt=`gmt grdinfo %s_topo.nc -T%g+s`\n", prefix, TOPO_INC); break;
 			case CSH_MODE:  printf ("set T_opt = `gmt grdinfo %s_topo.nc -T%g+s`\n", prefix, TOPO_INC); break;
 			case DOS_MODE: /* Must determine the grdinfo result directly */
-				if (GMT_Open_VirtualFile (API, GMT_IS_TEXTSET, GMT_IS_NONE, GMT_OUT, NULL, t_file) != GMT_NOERROR) exit (EXIT_FAILURE);
+				if (GMT_Open_VirtualFile (API, GMT_IS_DATASET, GMT_IS_TEXT, GMT_OUT, NULL, t_file) != GMT_NOERROR) exit (EXIT_FAILURE);
 				sprintf (cmd, "%s -R%s -T%g+s > %s", file, region, TOPO_INC, t_file);			/* The grdinfo command line */
 				if (GMT_Call_Module (API, "grdinfo", GMT_MODULE_CMD, cmd) != GMT_NOERROR) exit (EXIT_FAILURE);	/* This will return the -T<string> back via the T textset */
 				if ((T = GMT_Read_VirtualFile (API, t_file)) == NULL) exit (EXIT_FAILURE);	/* Get pointer to that container with the input textset */
-				printf ("set T_opt=%s\n", T->table[0]->segment[0]->data[0]);
+				printf ("set T_opt=%s\n", T->table[0]->segment[0]->text[0]);
 				printf ("gmt makecpt -C"); place_var (Ctrl->D.mode, "cpt", 0);
 				printf (" %%T_opt%% > %s_color.cpt\n", prefix);
 				if (GMT_Close_VirtualFile (API,t_file) != GMT_NOERROR) exit (EXIT_FAILURE);

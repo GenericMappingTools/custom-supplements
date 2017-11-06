@@ -211,11 +211,11 @@ int GMT_gmtaverage (void *API, int mode, void *args) {
 			module = "blockmean";
 			break;
 		case 'e':	/* Call blockmedian */
-			GMT_Delete_Option (API, t_ptr);	/* Since -Te = -T0.5 is the default */
+			GMT_Delete_Option (API, t_ptr, &options);	/* Since -Te = -T0.5 is the default */
 			module = "blockmedian";
 			break;
 		case 'o':	/* Call blockmode */
-			GMT_Delete_Option (API, t_ptr);	/* Since no special option -T is known to blockmode */
+			GMT_Delete_Option (API, t_ptr, &options);	/* Since no special option -T is known to blockmode */
 			module = "blockmode";
 			break;
 		default:	/* Call blockmedian for some arbitrary quantile by passing the given -T<q> */
