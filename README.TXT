@@ -6,7 +6,7 @@ via the main gmt executable, just like the standard and official
 supplemental GMT modules.  It is required that you have installed
 GMT >= 6 and made it your active GMT version before proceeding.
 
-Paul Wessel, May 5, 2017
+Paul Wessel, March 10, 2018
 
 1.  Decide what your plugin library name should be.  This is a short
     single word that determines the plugin name, e.g., "custom".
@@ -19,9 +19,9 @@ Paul Wessel, May 5, 2017
     GMT_Encode_Options function for more details).
 4.  Add all your modules filenames to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
     and set the string for LIB_STRING to match your plugin's key purpose.
-5.  Create required glue source code automatically by running the script
+5.  Create required glue source code automatically by running the GMT script
    		gmt_make_custom_code.sh <TAG>
-    in the src directory.
+    in the src directory (see GMT's share/tools for gmt_make_custom_code.sh)
 6.  In cmake, make ConfigUser.cmake by copying the template and make any edits.
 7.  Create a build directory in the top level directory, cd into build,
     and run "cmake .." (see README.CMake for more details).
