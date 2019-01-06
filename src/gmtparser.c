@@ -25,16 +25,17 @@
  *
  */
 
+#include "gmt.h"		/* All programs using the GMT API needs this */
+
 #define THIS_MODULE_NAME	"gmtparser"
 #define THIS_MODULE_LIB		"custom"
 #define THIS_MODULE_PURPOSE	"Demonstrate parsing of input data, defaults, and options"
 #define THIS_MODULE_KEYS	""
+#define THIS_MODULE_NEEDS	""
+#define THIS_MODULE_OPTIONS	"-BIJKOPRUVXYadefghinorst"	/* All the GMT common options */
 
-#include "gmt.h"		/* All programs using the GMT API needs this */
 #include "custom_version.h"	/* Must include this to use Custom_version */
 #include <string.h>
-
-#define GMT_PROG_OPTIONS	"-BIJKOPRUVXYadefghinorst"	/* All the GMT common options */
 
 EXTERN_MSC int GMT_gmtparser (void *API, int mode, void *args);
 
@@ -77,7 +78,7 @@ static void report (char *name, int count, double par[]) {
 int GMT_gmtparser (void *API, int mode, void *args) {
 	int ret, k;
 	double value[100];
-	char input[BUFSIZ], parameter[BUFSIZ], *commons = GMT_PROG_OPTIONS, string[2] = {0, 0};
+	char input[BUFSIZ], parameter[BUFSIZ], *commons = THIS_MODULE_OPTIONS, string[2] = {0, 0};
 	struct GMT_OPTION *options = NULL;		/* Linked list of program options */
 
 	if (API == NULL) return (EXIT_FAILURE);
@@ -88,7 +89,7 @@ int GMT_gmtparser (void *API, int mode, void *args) {
 	if (options->option == GMT_OPT_SYNOPSIS) Return (usage (API, GMT_SYNOPSIS));		/* Return the synopsis */
 
 	/* Parse the given command GMT command-line options */
-	if (GMT_Parse_Common (API, GMT_PROG_OPTIONS, options)) Return (EXIT_FAILURE);
+	if (GMT_Parse_Common (API, THIS_MODULE_OPTIONS, options)) Return (EXIT_FAILURE);
 
 	/* ---------------------------- This is the gmtparser main code ----------------------------*/
 

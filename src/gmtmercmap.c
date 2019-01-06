@@ -25,15 +25,16 @@
  *
  */
 
+#include "gmt_dev.h"
+
 #define THIS_MODULE_NAME	"gmtmercmap"
 #define THIS_MODULE_LIB		"custom"
 #define THIS_MODULE_PURPOSE	"Make a Mercator color map from ETOPO 1, 2, or 5 arc min global relief grids"
 #define THIS_MODULE_KEYS	"CCi,>XO,RG-"
+#define THIS_MODULE_NEEDS       "JR"
+#define THIS_MODULE_OPTIONS	"->BKOPRUVXYcnptxy"
 
-#include "gmt_dev.h"
 #include "custom_version.h"	/* Must include this to use Custom_version */
-
-#define MY_PROG_OPTIONS "->BKOPRUVXYcnptxy"
 
 #define MAP_BAR_GAP	"36p"	/* Offset color bar 36 points below map */
 #define MAP_BAR_HEIGHT	"8p"	/* Height of color bar, if used */
@@ -127,7 +128,7 @@ static int parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OPTION *op
 	struct GMT_OPTION *opt = NULL;
 
 	for (opt = options; opt; opt = opt->next) {	/* Process all the options given */
-		if (strchr (MY_PROG_OPTIONS, opt->option)) continue;	/* Common options already processed */
+		if (strchr (THIS_MODULE_OPTIONS, opt->option)) continue;	/* Common options already processed */
 
 		switch (opt->option) {
 			/* Processes program-specific parameters */
@@ -235,7 +236,7 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 		bailout (usage (API, length_unit, GMT_SYNOPSIS));	/* Return the synopsis */
 
 	/* Parse the common command-line arguments */
-	if (GMT_Parse_Common (API, MY_PROG_OPTIONS, options)) return (EXIT_FAILURE);	/* Parse the common options */
+	if (GMT_Parse_Common (API, THIS_MODULE_OPTIONS, options)) return (EXIT_FAILURE);	/* Parse the common options */
 	GMT_Get_Default (API, "PROJ_LENGTH_UNIT", def_unit);
 	if (!strcmp (def_unit, "cm")) length_unit = 0;
 	else if (!strcmp (def_unit, "inch")) length_unit = 1;
@@ -268,7 +269,7 @@ int GMT_gmtmercmap (void *API, int mode, void *args) {
 		min = (area < ETOPO1M_LIMIT) ? 1 : ((area < ETOPO2M_LIMIT) ? 2 : 5);	/* Use earth_relief_[1,2,5]m.grd depending on area */
 	}
 
-	sprintf (file, "earth_relief_%2.2dm.grd", min);	/* Make the selected file name and make sure it is accessible */
+	sprintf (file, "@earth_relief_%2.2dm", min);	/* Make the selected file name and make sure it is accessible */
 	if ((G = GMT_Read_Data (API, GMT_IS_GRID, GMT_IS_FILE, GMT_IS_SURFACE, GMT_GRID_HEADER_ONLY, NULL, file, NULL)) == NULL) {
 		GMT_Report (API, GMT_MSG_NORMAL, "Unable to locate file %s in the GMT search directories\n", file);
 		Return (EXIT_FAILURE);

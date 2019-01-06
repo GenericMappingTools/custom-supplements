@@ -27,13 +27,17 @@
  *
  */
 
+#include "gmt.h"		/* All programs using the GMT API needs this */
+
 #define THIS_MODULE_NAME	"grdfourier"
 #define THIS_MODULE_LIB		"custom"
 #define THIS_MODULE_PURPOSE	"Create a grid, add a spike, filter it in frequency domain, and write output"
 #define THIS_MODULE_KEYS	"<GI,GGO,RG-"
+#define THIS_MODULE_NEEDS	"R"
+#define THIS_MODULE_OPTIONS	"-VRIfr"	/* List the GMT options your program may need */
 
 #define MY_FFT_DIM	2	/* Dimension of FFT needed */
-#include "gmt.h"		/* All programs using the GMT API needs this */
+
 #include "custom_version.h"	/* Must include this to use Custom_version */
 
 /* Add any other include files needed by your program */
@@ -42,7 +46,6 @@
 #ifndef M_PI
 #define M_PI          3.14159265358979323846
 #endif
-#define GMT_PROG_OPTIONS	"-VRIfr"	/* List the GMT options your program may need */
 
 EXTERN_MSC int GMT_grdfourier (void *API, int mode, void *args);
 
@@ -129,7 +132,7 @@ static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION
 	struct GMT_OPTION *opt = NULL;	/* Loop variable pointing to the current option */
 
 	for (opt = options; opt; opt = opt->next) {	/* Process all the options given */
-		if (strchr (GMT_PROG_OPTIONS, opt->option)) continue;	/* Skip GMT common options */
+		if (strchr (THIS_MODULE_OPTIONS, opt->option)) continue;	/* Skip GMT common options */
 		switch (opt->option) {
 			case '<':	/* Input file */
 				if (Ctrl->In.active) {
@@ -208,7 +211,7 @@ int GMT_grdfourier (void *API, int mode, void *args) {
 	if (options->option == GMT_OPT_SYNOPSIS) bailout (usage (API, GMT_SYNOPSIS));		/* Return the synopsis */
 
 	/* Parse the commont GMT command-line options */
-	if (GMT_Parse_Common (API, GMT_PROG_OPTIONS, options)) Return (EXIT_FAILURE);
+	if (GMT_Parse_Common (API, THIS_MODULE_OPTIONS, options)) Return (EXIT_FAILURE);
 
 	/* Allocate Ctrl and parse program-specific options */
 	Ctrl = New_Ctrl (API);	/* Allocate and initialize a new control structure */

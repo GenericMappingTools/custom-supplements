@@ -29,15 +29,16 @@
  * number of points, datasum, weightsum, or a specified quantile q.
  */
 
+#include "gmt_dev.h"		/* Must include this to use GMT DEV API */
+
 #define THIS_MODULE_NAME	"gmtaverage"
 #define THIS_MODULE_LIB		"custom"
 #define THIS_MODULE_PURPOSE	"Block average (x,y,z) data tables by mean, median, or mode estimation"
 #define THIS_MODULE_KEYS	"<DI,>DO,RG-"
+#define THIS_MODULE_NEEDS	"R"
+#define THIS_MODULE_OPTIONS	"-:>RVabdefghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
 
-#include "gmt_dev.h"		/* Must include this to use GMT DEV API */
 #include "custom_version.h"	/* Must include this to use Custom_version */
-
-#define GMT_PROG_OPTIONS "-:>RVabdefghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
 
 EXTERN_MSC int GMT_gmtaverage (void *API, int mode, void *args);
 
@@ -117,7 +118,7 @@ static int parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OPTION *op
 	struct GMT_OPTION *opt = NULL;
 
 	for (opt = options; opt; opt = opt->next) {
-		if (strchr (GMT_PROG_OPTIONS, opt->option)) continue;	/* Common options already processed */
+		if (strchr (THIS_MODULE_OPTIONS, opt->option)) continue;	/* Common options already processed */
 		switch (opt->option) {
 
 			/* Skip options that will be handled by the GMT_block* functions later */
@@ -196,7 +197,7 @@ int GMT_gmtaverage (void *API, int mode, void *args) {
 	if (!options || options->option == GMT_OPT_USAGE) Bailout (usage (API, GMT_USAGE));	/* Exit the usage message */
 	if (options->option == GMT_OPT_SYNOPSIS) Bailout (usage (API, GMT_SYNOPSIS));	/* Exit the synopsis */
 	/* Parse the common command-line arguments */
-	if (GMT_Parse_Common (API, GMT_PROG_OPTIONS, options)) Bailout (EXIT_FAILURE);	/* Parse the common options */
+	if (GMT_Parse_Common (API, THIS_MODULE_OPTIONS, options)) Bailout (EXIT_FAILURE);	/* Parse the common options */
 	/* Parse the local command-line arguments */
 	Ctrl = New_Ctrl ();							/* Allocate gmtaverage control structure */
 	if ((error = parse (API, Ctrl, options))) Bailout (EXIT_FAILURE);	/* Parse local option arguments */
