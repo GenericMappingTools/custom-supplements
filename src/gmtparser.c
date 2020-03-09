@@ -27,12 +27,13 @@
 
 #include "gmt.h"		/* All programs using the GMT API needs this */
 
-#define THIS_MODULE_NAME	"gmtparser"
-#define THIS_MODULE_LIB		"custom"
-#define THIS_MODULE_PURPOSE	"Demonstrate parsing of input data, defaults, and options"
-#define THIS_MODULE_KEYS	""
-#define THIS_MODULE_NEEDS	""
-#define THIS_MODULE_OPTIONS	"-BIJKOPRUVXYadefghinorst"	/* All the GMT common options */
+#define THIS_MODULE_CLASSIC_NAME	"gmtparser"
+#define THIS_MODULE_MODERN_NAME		"gmtparser"
+#define THIS_MODULE_LIB			"custom"
+#define THIS_MODULE_PURPOSE		"Demonstrate parsing of input data, defaults, and options"
+#define THIS_MODULE_KEYS		""
+#define THIS_MODULE_NEEDS		""
+#define THIS_MODULE_OPTIONS		"-BIJKOPRUVXYadefghinorst"	/* All the GMT common options */
 
 #include "custom_version.h"	/* Must include this to use Custom_version */
 #include <string.h>
@@ -41,11 +42,11 @@ EXTERN_MSC int GMT_gmtparser (void *API, int mode, void *args);
 
 static int usage (void *API, int level) {
 	/* Specifies the full usage message from the program when no argument are given */
-	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
+	const char *name = gmt_show_name_and_purpose (API, THIS_MODULE_LIB, THIS_MODULE_CLASSIC_NAME, THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
-	GMT_Message (API, GMT_TIME_NONE, "usage: gmtparser [<any number of the GMT common options>]\n\n");
+	GMT_Message (API, GMT_TIME_NONE, "usage: %s [<any number of the GMT common options>]\n\n", name);
 
-	if (level == GMT_SYNOPSIS) return (EXIT_FAILURE);	/* Stop here when only a hyphen is given as argument */
+	if (level == GMT_SYNOPSIS) return (GMT_MODULE_SYNOPSIS);	/* Stop here when only a hyphen is given as argument */
 
 	GMT_Message (API, GMT_TIME_NONE, "\tgmtparser is used to demonstrate how GMT parser text.\n");
 	GMT_Message (API, GMT_TIME_NONE, "\tThere are three sections to the sequential program.\n");
@@ -61,7 +62,7 @@ static int usage (void *API, int level) {
 	GMT_Message (API, GMT_TIME_NONE, "\tIn section 1, ret = ?? gives the number of parsed arguments.\n");
 	GMT_Message (API, GMT_TIME_NONE, "\tIn section 3, ret = ?? gives the number of values returned for this common options.\n");
 
-	return (EXIT_FAILURE);
+	return (GMT_MODULE_USAGE);
 }
 
 static void report (char *name, int count, double par[]) {

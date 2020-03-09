@@ -59,11 +59,9 @@ include (ConfigCMake)
 
 # Find UNIX commands
 include (FindUnixCommands)
-#find_program (SVN svn)
 
 # Add subdirectories
 add_subdirectory (src)
-#add_subdirectory (cmake/dist) # make distribution bundles (always last)
 get_property(GMT_CUSTOM_LIB_PATH TARGET customlib PROPERTY LOCATION)
 GET_FILENAME_COMPONENT (GMT_CUSTOM_LIB_NAME ${GMT_CUSTOM_LIB_PATH} NAME)
 

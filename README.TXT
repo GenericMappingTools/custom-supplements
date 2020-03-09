@@ -1,12 +1,10 @@
-#	$Id$
-
 This README file explains the various steps you must take to design
 and successfully build a custom plugin library that can be accessed
 via the main gmt executable, just like the standard and official
 supplemental GMT modules.  It is required that you have installed
 GMT >= 6 and made it your active GMT version before proceeding.
 
-Paul Wessel, March 10, 2018
+Paul Wessel, March 8, 2020
 
 1.  Decide what your plugin library name should be.  This is a short
     single word that determines the plugin name, e.g., "custom".
@@ -16,12 +14,13 @@ Paul Wessel, March 10, 2018
     working modules in src.  Model your code after those templates.
     Set the THIS_MODULE_LIB parameter in your modules to <TAG> and supply
     reasonable settings to THIS_MODULE_KEYS (see API documentation for the
-    GMT_Encode_Options function for more details).
+    GMT_Encode_Options function for more details).  Also set THIS_MODULE_NEEDS
+    and THIS_MODULE_OPTIONS.
 4.  Add all your modules filenames to CUSTOM_PROGS_SRCS in src/CMakeLists.txt
     and set the string for LIB_STRING to match your plugin's key purpose.
 5.  Create required glue source code automatically by running the GMT script
-   		gmt_make_custom_code.sh <TAG>
-    in the src directory (see GMT's share/tools for gmt_make_custom_code.sh)
+   		$(gmt --show-sharedir)/tools/gmt_make_module_src.sh <TAG>
+    in your module src directory.
 6.  In cmake, make ConfigUser.cmake by copying the template and make any edits.
 7.  Create a build directory in the top level directory, cd into build,
     and run "cmake .." (see README.CMake for more details).

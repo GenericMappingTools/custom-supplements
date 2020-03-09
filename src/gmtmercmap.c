@@ -27,12 +27,13 @@
 
 #include "gmt_dev.h"
 
-#define THIS_MODULE_NAME	"gmtmercmap"
-#define THIS_MODULE_LIB		"custom"
-#define THIS_MODULE_PURPOSE	"Make a Mercator color map from ETOPO 1, 2, or 5 arc min global relief grids"
-#define THIS_MODULE_KEYS	"CCi,>XO,RG-"
-#define THIS_MODULE_NEEDS       "JR"
-#define THIS_MODULE_OPTIONS	"->BKOPRUVXYcnptxy"
+#define THIS_MODULE_CLASSIC_NAME	"gmtmercmap"
+#define THIS_MODULE_MODERN_NAME		"gmtmercmap"
+#define THIS_MODULE_LIB			"custom"
+#define THIS_MODULE_PURPOSE		"Make a Mercator color map from ETOPO 1, 2, or 5 arc min global relief grids"
+#define THIS_MODULE_KEYS		"CCi,>XO,RG-"
+#define THIS_MODULE_NEEDS		"JR"
+#define THIS_MODULE_OPTIONS		"->BKOPRUVXYcnptxy"
 
 #include "custom_version.h"	/* Must include this to use Custom_version */
 
@@ -88,18 +89,18 @@ static void Free_Ctrl (struct GMTMERCMAP_CTRL *C) {	/* Deallocate control struct
 
 static int usage (void *API, unsigned int length_unit, int level) {
 	char width[8];
+	const char *name = gmt_show_name_and_purpose (API, THIS_MODULE_LIB, THIS_MODULE_CLASSIC_NAME, THIS_MODULE_PURPOSE);
+	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
 	if (length_unit == 0)
 		strcpy (width, "25c");
 	else if (length_unit == 1)
 		strcpy (width, "10i");
 	else
 		strcpy (width, "700p");
-	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
-	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
-	GMT_Message (API, GMT_TIME_NONE, "usage: gmtmercmap [-C<cpt>] [-D[b|c|d]] [-E1|2|5] [-K] [-O] [-P]\n\t[%s] [-S] [%s] [%s]\n", GMT_R2_OPT, GMT_U_OPT, GMT_V_OPT);
+	GMT_Message (API, GMT_TIME_NONE, "usage: %s [-C<cpt>] [-D[b|c|d]] [-E1|2|5] [-K] [-O] [-P]\n\t[%s] [-S] [%s] [%s]\n", name, GMT_R2_OPT, GMT_U_OPT, GMT_V_OPT);
 	GMT_Message (API, GMT_TIME_NONE, "\t[-W<width>] [%s] [%s] [%s]\n\t[%s]\n\t[%s] [%s]\n\n", GMT_X_OPT, GMT_Y_OPT, GMT_c_OPT, GMT_n_OPT, GMT_p_OPT, GMT_t_OPT);
 
-	if (level == GMT_SYNOPSIS) return (EXIT_FAILURE);
+	if (level == GMT_SYNOPSIS) return (GMT_MODULE_SYNOPSIS);
 
 	GMT_Message (API, GMT_TIME_NONE, "\n\tOPTIONS:\n");
 	GMT_Message (API, GMT_TIME_NONE, "\t-C Color palette to use [relief].\n");
@@ -112,7 +113,7 @@ static int usage (void *API, unsigned int length_unit, int level) {
 	GMT_Message (API, GMT_TIME_NONE, "\t-W Specify the width of your map [%s].\n", width);
 	GMT_Option (API, "U,V,X,c,n,p,t,.");
 
-	return (EXIT_FAILURE);
+	return (GMT_MODULE_USAGE);
 }
 
 static int parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OPTION *options)

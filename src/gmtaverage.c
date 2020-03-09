@@ -31,12 +31,13 @@
 
 #include "gmt_dev.h"		/* Must include this to use GMT DEV API */
 
-#define THIS_MODULE_NAME	"gmtaverage"
-#define THIS_MODULE_LIB		"custom"
-#define THIS_MODULE_PURPOSE	"Block average (x,y,z) data tables by mean, median, or mode estimation"
-#define THIS_MODULE_KEYS	"<DI,>DO,RG-"
-#define THIS_MODULE_NEEDS	"R"
-#define THIS_MODULE_OPTIONS	"-:>RVabdefghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
+#define THIS_MODULE_CLASSIC_NAME		"gmtaverage"
+#define THIS_MODULE_MODERN_NAME			"gmtaverage"
+#define THIS_MODULE_LIB				"custom"
+#define THIS_MODULE_PURPOSE			"Block average (x,y,z) data tables by mean, median, or mode estimation"
+#define THIS_MODULE_KEYS			"<DI,>DO,RG-"
+#define THIS_MODULE_NEEDS			"R"
+#define THIS_MODULE_OPTIONS			"-:>RVabdefghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
 
 #include "custom_version.h"	/* Must include this to use Custom_version */
 
@@ -68,13 +69,13 @@ static void Free_Ctrl (struct GMTAVERAGE_CTRL *C) {	/* Deallocate control struct
 }
 
 static int usage (void *API, int level) {
-	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
+	const char *name = gmt_show_name_and_purpose (API, THIS_MODULE_LIB, THIS_MODULE_CLASSIC_NAME, THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
-	GMT_Message (API, GMT_TIME_NONE, "usage: gmtaverage [<table>] %s -Te|m|n|o|s|w|<q>\n", GMT_I_OPT);
+	GMT_Message (API, GMT_TIME_NONE, "usage: %s [<table>] %s -Te|m|n|o|s|w|<q>\n", name, GMT_I_OPT);
 	GMT_Message (API, GMT_TIME_NONE, "\t%s [-C] [-E[b]] [-Q] [%s] [-W[i][o]]\n\t[%s] [%s] [%s]\n\t[%s] [%s] [%s]\n\t[%s]\n\t[%s] [%s] [%s]\n\n",
 		GMT_R2_OPT, GMT_V_OPT, GMT_a_OPT, GMT_b_OPT, GMT_d_OPT, GMT_e_OPT, GMT_f_OPT, GMT_h_OPT, GMT_i_OPT, GMT_o_OPT, GMT_r_OPT, GMT_colon_OPT);
 
-	if (level == GMT_SYNOPSIS) return (EXIT_FAILURE);
+	if (level == GMT_SYNOPSIS) return (GMT_MODULE_SYNOPSIS);
 
 	GMT_Option (API, "I");
 	GMT_Message (API, GMT_TIME_NONE, "\t-T Select what value you wish to report per block:\n");
@@ -104,7 +105,7 @@ static int usage (void *API, int level) {
 	GMT_Message (API, GMT_TIME_NONE, "\t   Default is 3 columns (or 4 if -W is set).\n");
 	GMT_Option (API, "bo,d,e,f,h,i,o,r,:,.");
 	
-	return (EXIT_FAILURE);
+	return (GMT_MODULE_USAGE);
 }
 
 static int parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OPTION *options) {

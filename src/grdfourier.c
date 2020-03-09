@@ -29,12 +29,13 @@
 
 #include "gmt.h"		/* All programs using the GMT API needs this */
 
-#define THIS_MODULE_NAME	"grdfourier"
-#define THIS_MODULE_LIB		"custom"
-#define THIS_MODULE_PURPOSE	"Create a grid, add a spike, filter it in frequency domain, and write output"
-#define THIS_MODULE_KEYS	"<GI,GGO,RG-"
-#define THIS_MODULE_NEEDS	"R"
-#define THIS_MODULE_OPTIONS	"-VRIfr"	/* List the GMT options your program may need */
+#define THIS_MODULE_CLASSIC_NAME	"grdfourier"
+#define THIS_MODULE_MODERN_NAME		"grdfourier"
+#define THIS_MODULE_LIB			"custom"
+#define THIS_MODULE_PURPOSE		"Create a grid, add a spike, filter it in frequency domain, and write output"
+#define THIS_MODULE_KEYS		"<GI,GGO,RG-"
+#define THIS_MODULE_NEEDS		"R"
+#define THIS_MODULE_OPTIONS		"-VRIfr"	/* List the GMT options your program may need */
 
 #define MY_FFT_DIM	2	/* Dimension of FFT needed */
 
@@ -97,13 +98,13 @@ static void Free_Ctrl (void *API, struct GMT_GRDFOURIER_CTRL *C) {	/* Free memor
 }
 
 static int usage (void *API, int level) {
+	const char *name = gmt_show_name_and_purpose (API, THIS_MODULE_LIB, THIS_MODULE_CLASSIC_NAME, THIS_MODULE_PURPOSE);
 	/* Specifies the full usage message from the program when no argument are given */
-	GMT_Message (API, GMT_TIME_NONE, "%s(%s) %s - %s\n\n", THIS_MODULE_NAME, THIS_MODULE_LIB, CUSTOM_version(), THIS_MODULE_PURPOSE);
 	if (level == GMT_MODULE_PURPOSE) return (GMT_NOERROR);
-	GMT_Message (API, GMT_TIME_NONE, "usage: grdfourier -G<outgrid> [<ingrid> ][-I<xinc>[/<yinc>]] \n");
+	GMT_Message (API, GMT_TIME_NONE, "usage: %s -G<outgrid> [<ingrid> ][-I<xinc>[/<yinc>]]\n", name);
 	GMT_Message (API, GMT_TIME_NONE, "	[-R<xmin/xmax/ymin/ymax>] [-A<row/col>] [-D<dir>] [-F<width>]\n\n");
 
-	if (level == GMT_SYNOPSIS) return (EXIT_FAILURE);	/* Stop here when only a hyphen is given as argument */
+	if (level == GMT_SYNOPSIS) return (GMT_MODULE_SYNOPSIS);	/* Stop here when only a hyphen is given as argument */
 
 	GMT_Message (API, GMT_TIME_NONE, "\t-G filename for output netCDF grid file.\n");
 	GMT_Message (API, GMT_TIME_NONE, "\tOPTIONS:\n");
@@ -118,7 +119,7 @@ static int usage (void *API, int level) {
 	GMT_Message (API, GMT_TIME_NONE, "\t-R To create a new grid, specify region <xmin/xmax/ymin/ymax>.\n");
 	GMT_Message (API, GMT_TIME_NONE, "\t-r Select pixel registration for new grid.\n");
 
-	return (EXIT_FAILURE);
+	return (GMT_MODULE_USAGE);
 }
 
 static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION *options) {
