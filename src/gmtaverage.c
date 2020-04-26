@@ -41,8 +41,6 @@
 
 #include "custom_version.h"	/* Must include this to use Custom_version */
 
-EXTERN_MSC int GMT_gmtaverage (void *API, int mode, void *args);
-
 struct GMTAVERAGE_CTRL {	/* All local control options for this program (except common args) */
 	struct E {	/* -E[b] */
 		unsigned int active;
@@ -182,7 +180,7 @@ static int parse (void *API, struct GMTAVERAGE_CTRL *Ctrl, struct GMT_OPTION *op
 #define Bailout(code) {Free_Options; return (code);}
 #define Return(code) {Free_Ctrl (Ctrl); Bailout (code);}
 
-int GMT_gmtaverage (void *API, int mode, void *args) {
+EXTERN_MSC int GMT_gmtaverage (void *API, int mode, void *args) {
 	int error = 0;
 	char *module = NULL;
 	struct GMT_OPTION *options = NULL, *t_ptr = NULL;

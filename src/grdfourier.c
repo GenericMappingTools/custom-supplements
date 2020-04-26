@@ -48,8 +48,6 @@
 #define M_PI          3.14159265358979323846
 #endif
 
-EXTERN_MSC int GMT_grdfourier (void *API, int mode, void *args);
-
 struct GMT_GRDFOURIER_CTRL {	/* Here is where you collect your programs specific options */
 	struct In {	/* Input grid file */
 		unsigned int active;	/* 1 if this option was specified */
@@ -191,7 +189,7 @@ static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION
 #define bailout(code) {Free_Options; return (code);}
 #define Return(code) {Free_Ctrl (API, Ctrl); bailout (code);}
 
-int GMT_grdfourier (void *API, int mode, void *args) {
+EXTERN_MSC int GMT_grdfourier (void *API, int mode, void *args) {
 	/* 1. Define local variables */
 	int error;
 	unsigned int wn_mode = 0;			/* To select radial [0], x (1), or y (2) wavenumber */

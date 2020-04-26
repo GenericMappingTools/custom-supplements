@@ -38,8 +38,6 @@
 #include "custom_version.h"	/* Must include this to use Custom_version */
 #include <string.h>
 
-EXTERN_MSC int GMT_gmtparser (void *API, int mode, void *args);
-
 static int usage (void *API, int level) {
 	/* Specifies the full usage message from the program when no argument are given */
 	const char *name = gmt_show_name_and_purpose (API, THIS_MODULE_LIB, THIS_MODULE_CLASSIC_NAME, THIS_MODULE_PURPOSE);
@@ -76,7 +74,7 @@ static void report (char *name, int count, double par[]) {
 #define Free_Options {if (GMT_Destroy_Options (API, &options) != GMT_NOERROR) return (EXIT_FAILURE);}
 #define Return(code) {Free_Options; return (code);}
 
-int GMT_gmtparser (void *API, int mode, void *args) {
+EXTERN_MSC int GMT_gmtparser (void *API, int mode, void *args) {
 	int ret, k;
 	double value[100];
 	char input[BUFSIZ], parameter[BUFSIZ], *commons = THIS_MODULE_OPTIONS, string[2] = {0, 0};
