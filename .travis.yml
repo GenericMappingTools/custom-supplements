@@ -34,7 +34,7 @@ addons:
 
 before_install:
     # Install GMT master branch
-    - curl https://raw.githubusercontent.com/GenericMappingTools/gmt/build-script/ci/build-gmt-master.sh | bash
+    - curl https://raw.githubusercontent.com/GenericMappingTools/gmt/master/ci/build-gmt-master.sh | bash
     # Check GMT installation
     - gmt --version
     - gmt-config --all
