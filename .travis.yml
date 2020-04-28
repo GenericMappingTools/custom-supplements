@@ -21,7 +21,9 @@ env:
 before_install:
     # Install GMT master branch
     - curl https://raw.githubusercontent.com/GenericMappingTools/gmt/build-script/ci/build-gmt-master.sh | bash
+    # Add GMT to PATH
     - export PATH=${GMT_INSTALL_DIR}/bin:${PATH}
+    # Check GMT installation
     - gmt --version
     - gmt-config --all
 
