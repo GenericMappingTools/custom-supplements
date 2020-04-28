@@ -17,12 +17,24 @@ env:
     global:
         # GMT install location
         - GMT_INSTALL_DIR=${HOME}/gmt-install-dir
+        - PATH=${GMT_INSTALL_DIR}/bin:${PATH}
+
+addons:
+  apt:
+    packages:
+      - cmake
+      - build-essential
+      - libcurl4-gnutls-dev
+      - libnetcdf-dev
+      - libgdal-dev
+      - libfftw3-dev
+      - libpcre3-dev
+      - liblapack-dev
+      - curl
 
 before_install:
     # Install GMT master branch
     - curl https://raw.githubusercontent.com/GenericMappingTools/gmt/build-script/ci/build-gmt-master.sh | bash
-    # Add GMT to PATH
-    - export PATH=${GMT_INSTALL_DIR}/bin:${PATH}
     # Check GMT installation
     - gmt --version
     - gmt-config --all
