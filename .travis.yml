@@ -1,0 +1,35 @@
+# Configuration file for TravisCI
+
+language: c
+
+os: linux
+dist: bionic
+
+# Only build pushes to the master branch and tags. This avoids the double
+# builds than happen when working on a branch instead of a fork.
+branches:
+    only:
+        - master
+        # Regex to build tagged commits with version numbers
+        - /\d+\.\d+(\.\d+)?(\S*)?$/
+
+env:
+    global:
+        # GMT install location
+        - GMT_INSTALL_DIR=${HOME}/gmt-install-dir
+
+before_install:
+    # Install GMT master branch
+    - curl https://raw.githubusercontent.com/GenericMappingTools/gmt/build-script/ci/build-gmt-master.sh | bash
+    - export PATH=${GMT_INSTALL_DIR}/bin:${PATH}
+    - gmt --version
+    - gmt-config --all
+
+install:
+    - gmt --version
+
+script:
+    - gmt --version
+
+notifications:
+    email: false
