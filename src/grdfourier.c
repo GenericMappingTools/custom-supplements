@@ -39,8 +39,6 @@
 
 #define MY_FFT_DIM	2	/* Dimension of FFT needed */
 
-#include "custom_version.h"	/* Must include this to use Custom_version */
-
 /* Add any other include files needed by your program */
 #include <math.h>
 #include <string.h>
@@ -145,7 +143,7 @@ static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION
 				break;
 			case 'A':	/* Location of spike */
 				Ctrl->A.active = 1;
-				if ((ret = GMT_Get_Value (API, opt->arg, value)) == 2) {
+				if ((ret = GMT_Get_Values (API, opt->arg, value, 2)) == 2) {
 					Ctrl->A.row = (unsigned int)value[0];
 					Ctrl->A.col = (unsigned int)value[1];
 				}
@@ -160,7 +158,7 @@ static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION
 				break;
 			case 'F':	/* Gaussian filter width */
 				Ctrl->F.active = 1;
-				if ((ret = GMT_Get_Value (API, opt->arg, value)) == 1) Ctrl->F.width = value[0];
+				if ((ret = GMT_Get_Values (API, opt->arg, value, 1)) == 1) Ctrl->F.width = value[0];
 				break;
 			case 'G':	/* Output file */
 				Ctrl->G.active = 1;
@@ -234,10 +232,10 @@ EXTERN_MSC int GMT_grdfourier (void *API, int mode, void *args) {
 	y = GMT_Get_Coord (API, GMT_IS_GRID, GMT_Y, Grid);	/* Get array of y coordinates */
 
 	if (!Ctrl->A.active) {	/* We know the grid dimension so we can select the mid point */
-		Ctrl->A.row = Grid->header->ny / 2;
-		Ctrl->A.col = Grid->header->nx / 2;
+		Ctrl->A.row = Grid->header->n_rows / 2;
+		Ctrl->A.col = Grid->header->n_columns / 2;
 	}
-	if (Ctrl->A.row >= Grid->header->ny || Ctrl->A.col >= Grid->header->nx) {
+	if (Ctrl->A.row >= Grid->header->n_rows || Ctrl->A.col >= Grid->header->n_columns) {
 		GMT_Message (API, GMT_TIME_CLOCK, "Spike is placed outside the grid! We give up.\n");
 		Return (EXIT_FAILURE);
 	}
