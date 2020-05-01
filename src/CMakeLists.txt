@@ -1,6 +1,4 @@
 #
-# $Id: CMakeLists.txt 11838 2013-06-28 06:49:32Z pwessel $
-#
 # Copyright (c) 1991-2020 by GMT Team (https://www.generic-mapping-tools.org/team.html)
 # See LICENSE.TXT file for copying and redistribution conditions.
 #
@@ -48,3 +46,29 @@ set (SUPPL_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/custom_config.h)
 set (CUSTOM_PACKAGE_VERSION "6.1.0")
 
 configure_file (custom_config.h.in custom_config.h)
+
+find_package (GMT REQUIRED)
+include_directories (${GMT_INCLUDE_DIR})
+
+find_package (NETCDF REQUIRED)
+include_directories (${NETCDF_INCLUDE_DIR})
+
+add_library (${SUPPL_LIB_NAME} MODULE
+	${SUPPL_LIB_SRCS} 
+	${CMAKE_CURRENT_BINARY_DIR}/custom_config.h
+	gmt_custom_glue.c
+	)
+
+target_link_libraries (${SUPPL_LIB_NAME}
+	${GMT_LIBRARIES}
+	${NETCDF_LIBRARIES}
+)
+
+set_target_properties (${SUPPL_LIB_NAME}
+    PROPERTIES
+	OUTPUT_NAME ${SUPPL_LIB_NAME}
+	RUNTIME_OUTPUT_NAME ${SUPPL_LIB_NAME}
+    LIBRARY_OUTPUT_DIRECTORY plugins
+    RUNTIME_OUTPUT_DIRECTORY plugins
+    PREFIX ""
+    DEFINE_SYMBOL "LIBRARY_EXPORTS")
