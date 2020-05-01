@@ -47,7 +47,7 @@ install:
     - cd ..
 
 script:
-    - gmt set GMT_CUSTOM_LIBS ${PWD}/build/src/custom.so
+    - gmt set GMT_CUSTOM_LIBS ${PWD}/build/src/plugins/custom.so
     - gmt --version -Vd
 
 notifications:
