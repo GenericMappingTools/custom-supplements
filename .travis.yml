@@ -40,9 +40,13 @@ before_install:
     - gmt-config --all
 
 install:
-    - gmt --version
+    - mkdir build
+    - cd build
+    - cmake ..
+    - make
 
 script:
+    - pwd
     - gmt --version
 
 notifications:
