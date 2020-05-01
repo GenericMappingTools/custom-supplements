@@ -44,10 +44,11 @@ install:
     - cd build
     - cmake ..
     - make
+    - cd ..
 
 script:
-    - pwd
-    - gmt --version
+    - gmt set GMT_CUSTOM_LIBS ${PWD}/build/src/custom.so
+    - gmt --version -Vd
 
 notifications:
     email: false
