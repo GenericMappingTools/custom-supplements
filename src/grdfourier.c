@@ -232,10 +232,10 @@ EXTERN_MSC int GMT_grdfourier (void *API, int mode, void *args) {
 	y = GMT_Get_Coord (API, GMT_IS_GRID, GMT_Y, Grid);	/* Get array of y coordinates */
 
 	if (!Ctrl->A.active) {	/* We know the grid dimension so we can select the mid point */
-		Ctrl->A.row = Grid->header->ny / 2;
-		Ctrl->A.col = Grid->header->nx / 2;
+		Ctrl->A.row = Grid->header->n_rows / 2;
+		Ctrl->A.col = Grid->header->n_columns / 2;
 	}
-	if (Ctrl->A.row >= Grid->header->ny || Ctrl->A.col >= Grid->header->nx) {
+	if (Ctrl->A.row >= Grid->header->n_rows || Ctrl->A.col >= Grid->header->n_columns) {
 		GMT_Message (API, GMT_TIME_CLOCK, "Spike is placed outside the grid! We give up.\n");
 		Return (EXIT_FAILURE);
 	}
