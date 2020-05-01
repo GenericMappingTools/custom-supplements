@@ -94,7 +94,7 @@ EXTERN_MSC int GMT_gmtparser (void *API, int mode, void *args) {
 	GMT_Message (API, GMT_TIME_CLOCK, "Enter various lengths, distances, coordinates, either one-by-one or comma/slash separated.  End with - (a single hyphen):\n");
 	while (scanf ("%s", input) == 1 && input[0]) {		/* As long as user provides input... */
 		if (!strcmp (input, "-")) break;		/* OK, the end signal */
-		ret = GMT_Get_Values (API, input, value, 1);	/* Convert one or more strings to doubles */
+		ret = GMT_Get_Values (API, input, value, 10);	/* Convert one or more strings to doubles */
 		report (input, ret, value);			/* Report them as decimal values */
 	}
 	
