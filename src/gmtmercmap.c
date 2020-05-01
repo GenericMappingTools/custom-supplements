@@ -211,8 +211,8 @@ EXTERN_MSC int GMT_gmtmercmap (void *API, int mode, void *args) {
 	
 	double area, z, z_min, z_max, wesn[4];
 	
-	char file[256], z_file[GMT_STR16], i_file[GMT_STR16];
-	char cmd[BUFSIZ], c_file[GMT_STR16], t_file[GMT_STR16], def_unit[16];
+	char file[256], z_file[GMT_VF_LEN], i_file[GMT_VF_LEN];
+	char cmd[BUFSIZ], c_file[GMT_VF_LEN], t_file[GMT_VF_LEN], def_unit[16];
 	static char unit[3] = "cip";
 
 	struct GMT_GRID *G = NULL, *I = NULL;
