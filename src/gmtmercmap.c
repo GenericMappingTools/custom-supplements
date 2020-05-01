@@ -35,8 +35,6 @@
 #define THIS_MODULE_NEEDS		"JR"
 #define THIS_MODULE_OPTIONS		"->BKOPRUVXYcnptxy"
 
-#include "custom_version.h"	/* Must include this to use Custom_version */
-
 #define MAP_BAR_GAP	"36p"	/* Offset color bar 36 points below map */
 #define MAP_BAR_HEIGHT	"8p"	/* Height of color bar, if used */
 #define MAP_OFFSET	"100p"	/* Start map 100p from paper edge when colorbar is requested */

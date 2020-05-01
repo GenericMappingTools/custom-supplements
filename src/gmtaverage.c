@@ -39,8 +39,6 @@
 #define THIS_MODULE_NEEDS			"R"
 #define THIS_MODULE_OPTIONS			"-:>RVabdefghior" "H"	/* The H is for possible compatibility with GMT4 syntax */
 
-#include "custom_version.h"	/* Must include this to use Custom_version */
-
 struct GMTAVERAGE_CTRL {	/* All local control options for this program (except common args) */
 	struct E {	/* -E[b] */
 		unsigned int active;

@@ -39,8 +39,6 @@
 
 #define MY_FFT_DIM	2	/* Dimension of FFT needed */
 
-#include "custom_version.h"	/* Must include this to use Custom_version */
-
 /* Add any other include files needed by your program */
 #include <math.h>
 #include <string.h>

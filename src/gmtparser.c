@@ -35,7 +35,6 @@
 #define THIS_MODULE_NEEDS		""
 #define THIS_MODULE_OPTIONS		"-BIJKOPRUVXYadefghinorst"	/* All the GMT common options */
 
-#include "custom_version.h"	/* Must include this to use Custom_version */
 #include <string.h>
 
 static int usage (void *API, int level) {
