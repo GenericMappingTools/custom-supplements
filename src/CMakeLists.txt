@@ -53,6 +53,9 @@ include_directories (${GMT_INCLUDE_DIR})
 find_package (NETCDF REQUIRED)
 include_directories (${NETCDF_INCLUDE_DIR})
 
+find_package (GDAL)
+include_directories (${GDAL_INCLUDE_DIR})
+
 add_library (${SUPPL_LIB_NAME} MODULE
 	${SUPPL_LIB_SRCS} 
 	${CMAKE_CURRENT_BINARY_DIR}/custom_config.h
@@ -62,6 +65,7 @@ add_library (${SUPPL_LIB_NAME} MODULE
 target_link_libraries (${SUPPL_LIB_NAME}
 	${GMT_LIBRARIES}
 	${NETCDF_LIBRARIES}
+	${GDAL_LIBRARIES}
 )
 
 set_target_properties (${SUPPL_LIB_NAME}
