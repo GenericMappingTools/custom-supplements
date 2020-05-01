@@ -157,7 +157,7 @@ static int parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OPTION *op
 				break;
 			case 'W':	/* Map width */
 				Ctrl->W.active = 1;
-				GMT_Get_Value (API, opt->arg, &Ctrl->W.width);
+				GMT_Get_Values (API, opt->arg, &Ctrl->W.width, 1);
 				break;
 			case 'S':	/* Draw scale beneath map */
 				Ctrl->S.active = 1;

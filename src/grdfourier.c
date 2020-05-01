@@ -145,7 +145,7 @@ static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION
 				break;
 			case 'A':	/* Location of spike */
 				Ctrl->A.active = 1;
-				if ((ret = GMT_Get_Value (API, opt->arg, value)) == 2) {
+				if ((ret = GMT_Get_Values (API, opt->arg, value, 2)) == 2) {
 					Ctrl->A.row = (unsigned int)value[0];
 					Ctrl->A.col = (unsigned int)value[1];
 				}
@@ -160,7 +160,7 @@ static int parse (void *API, struct GMT_GRDFOURIER_CTRL *Ctrl, struct GMT_OPTION
 				break;
 			case 'F':	/* Gaussian filter width */
 				Ctrl->F.active = 1;
-				if ((ret = GMT_Get_Value (API, opt->arg, value)) == 1) Ctrl->F.width = value[0];
+				if ((ret = GMT_Get_Values (API, opt->arg, value, 1)) == 1) Ctrl->F.width = value[0];
 				break;
 			case 'G':	/* Output file */
 				Ctrl->G.active = 1;
