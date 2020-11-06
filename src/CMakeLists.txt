@@ -1,7 +1,5 @@
 #
-# $Id$
-#
-# Copyright (c) 1991-2020 by the GMT Team (https://www.generic-mapping-tools.org/team.html)
+# Copyright (c) 1991-2020 by GMT Team (https://www.generic-mapping-tools.org/team.html)
 # See LICENSE.TXT file for copying and redistribution conditions.
 #
 # This program is free software; you can redistribute it and/or modify
@@ -13,129 +11,68 @@
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 #
-# Contact info: www.generic-mapping-tools.org
+# Contact info: http://www.soest.hawaii.edu/PT/GSFML
 #-------------------------------------------------------------------------------
+# Below, "custom" and "CUSTOM" should be replaced with your actual supplement name
 #
-# 1. To modify the cmake process: Customize your cmake/ConfigUser.cmake file
-# 2. To add more modules: Edit CUSTOM_PROGS_SRCS below.
-# 3. Edit this: LIB_STRING="GMT custom: Tools for the custom project"
+# SUPPL_LIB_NAME [required]
+#	name of the supplement package. It can be different from the directory name.
+#   If not given then the modules are added to the supplements library
+set (SUPPL_LIB_NAME custom)
+set (SUPPL_LIB_PURPOSE "GMT custom: Tools for the CUSTOM project")
 
-# ==> Modules in this custom library [add the ones you have]:
-set (CUSTOM_PROGS_SRCS gmtaverage.c gmtmercmap.c gmtparser.c grdfourier.c)
-#=========================================================================
-# Most likely no changes below here
+# SUPPL_PROGS_SRCS [required]
+#	list of C source codes for supplemental modules
+set (SUPPL_PROGS_SRCS gmtaverage.c gmtmercmap.c gmtparser.c grdfourier.c)
 
-include (ManageString)
+# SUPPL_LIB_SRCS [required]
+#	list of C source codes for supplemental library
+set (SUPPL_LIB_SRCS ${SUPPL_PROGS_SRCS})
 
-# Include CREATE_DEBUG_SYM macro
-include (CreateDebugSym)
+# SUPPL_HEADERS [optional]
+#	header files. Will be installed if BUILD_DEVELOPER is TRUE
+set (SUPPL_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/custom_config.h)
 
-# On Windows do not prefix the DLLs with the 'lib' prefix
-if (WIN32)
-	set(LIB_PREFIX "")
-else (WIN32)
-	set(LIB_PREFIX "lib")
-endif (WIN32)
+# SUPPL_EXAMPLE_FILES [optional]
+#	README and other example files
+#set (SUPPL_EXAMPLE_FILES README.custom)
 
-# Find libraries
-message (STATUS "Searching dependent libraries. This may take a few minutes...")
+# SUPPL_EXAMPLE_PROGS [optional]
+#	example scripts
+#set (SUPPL_EXAMPLE_PROGS test1.sh test2.sh)
+
+# CUSTOM SPECIFIC SETTINGS
+
+set (CUSTOM_PACKAGE_VERSION "6.1.0")
+
+configure_file (custom_config.h.in custom_config.h)
+
 find_package (GMT REQUIRED)
 include_directories (${GMT_INCLUDE_DIR})
+
 find_package (NETCDF REQUIRED)
 include_directories (${NETCDF_INCLUDE_DIR})
-find_package (CURL REQUIRED)
-include_directories (${CURL_INCLUDE_DIR})
 
 find_package (GDAL)
-if (GDAL_FOUND)
-	set (HAVE_GDAL TRUE CACHE INTERNAL "System has GDAL")
-	include_directories (${GDAL_INCLUDE_DIR})
-	list (APPEND GMT_OPTIONAL_LIBRARIES ${GDAL_LIBRARIES})
-endif (GDAL_FOUND)
+include_directories (${GDAL_INCLUDE_DIR})
 
-find_package (Threads)
+add_library (${SUPPL_LIB_NAME} MODULE
+	${SUPPL_LIB_SRCS} 
+	${CMAKE_CURRENT_BINARY_DIR}/custom_config.h
+	gmt_custom_glue.c
+	)
 
-# check for math and POSIX functions
-include(ConfigureChecks)
-
-include_directories (${CUSTOM_SOURCE_DIR}/src)
-include_directories (${CMAKE_CURRENT_BINARY_DIR})
-#include_directories (${PROJECT_BINARY_DIR})
-set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
-
-# Support code for the modules:
-set (CUSTOM_LIB_SRCS gmt_${CMAKE_PROJECT_NAME}_module.h gmt_${CMAKE_PROJECT_NAME}_module.c)
-
-# lib targets
-set (CUSTOM_LIBS customlib)
-
-# customlib:
-set (CMAKE_SHARED_MODULE_SUFFIX .so)
-add_library (customlib MODULE
-	${CUSTOM_LIB_SRCS}
-	${CUSTOM_PROGS_SRCS})
-
-target_link_libraries (customlib
+target_link_libraries (${SUPPL_LIB_NAME}
 	${GMT_LIBRARIES}
-	${CMAKE_THREAD_LIBS_INIT})
+	${NETCDF_LIBRARIES}
+	${GDAL_LIBRARIES}
+)
 
-if (HAVE_M_LIBRARY)
-	# link the math library
-	target_link_libraries (customlib m)
-endif (HAVE_M_LIBRARY)
-
-set_target_properties (customlib
-	PROPERTIES
-	OUTPUT_NAME ${CMAKE_PROJECT_NAME}
-	PREFIX ""
-	IMPORT_PREFIX "${LIB_PREFIX}"
-	LIBRARY_OUTPUT_DIRECTORY plugins
-	RUNTIME_OUTPUT_DIRECTORY plugins
-	LINK_FLAGS "${USER_CUSTOMLIB_LINK_FLAGS}"
-	DEFINE_SYMBOL "LIBRARY_EXPORTS")
-
-# If a renaming of the custom dll has been set in ConfigUser.cmake
-if (WIN32 AND CUSTOM_DLL_RENAME)
-	set_target_properties (customlib PROPERTIES RUNTIME_OUTPUT_NAME ${CUSTOM_DLL_RENAME})
-endif ()
-
-configure_file (custom_version.h.in custom_version.h)
-
-# generate Mac debugging symbols
-create_debug_sym (${CUSTOM_LIBS})
-
-# temporary hack
-if (NOT CUSTOM_INSTALL_MONOLITHIC)
-	set (CUSTOM_MAIN_NAME ${CMAKE_PROJECT_NAME}${CUSTOM_INSTALL_NAME_SUFFIX})
-else (NOT CUSTOM_INSTALL_MONOLITHIC)
-	set (CUSTOM_MAIN_NAME ${CMAKE_PROJECT_NAME})
-endif (NOT CUSTOM_INSTALL_MONOLITHIC)
-
-
-# add the install targets
-install (TARGETS ${CUSTOM_LIBS}
-	ARCHIVE DESTINATION ${CUSTOM_LIBDIR}
-	COMPONENT Runtime
-	LIBRARY DESTINATION ${CUSTOM_LIBDIR}
-	COMPONENT Runtime
-	RUNTIME DESTINATION ${CUSTOM_BINDIR}
-	COMPONENT Runtime)
-
-if (WIN32 AND _debug_build)
-	# install program database files
-	set (_pdb_files)
-	foreach (_target ${LIB_PREFIX}${CUSTOM_CUSTOM_RENAME})
-		list (APPEND _pdb_files "${CMAKE_CURRENT_BINARY_DIR}/${_target}.pdb")
-	endforeach ()
-	install (FILES ${_pdb_files}
-		DESTINATION ${CUSTOM_BINDIR}
-		COMPONENT Runtime)
-endif (WIN32 AND _debug_build)
-
-# this prints out the final version of the compiler/linker flags
-string (TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
-string(REGEX REPLACE "[ ]+" " " _using_cflags ${CMAKE_C_FLAGS} " "
-	${CMAKE_C_FLAGS_${CMAKE_BUILD_TYPE_UPPER}})
-message (STATUS "Using CFLAGS = '${_using_cflags}'")
-
-# vim: textwidth=78 noexpandtab tabstop=2 softtabstop=2 shiftwidth=2
+set_target_properties (${SUPPL_LIB_NAME}
+    PROPERTIES
+	OUTPUT_NAME ${SUPPL_LIB_NAME}
+	RUNTIME_OUTPUT_NAME ${SUPPL_LIB_NAME}
+    LIBRARY_OUTPUT_DIRECTORY plugins
+    RUNTIME_OUTPUT_DIRECTORY plugins
+    PREFIX ""
+    DEFINE_SYMBOL "LIBRARY_EXPORTS")

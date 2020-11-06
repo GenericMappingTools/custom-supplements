@@ -1,5 +1,4 @@
 #
-# $Id: FindGDAL.cmake 14889 2015-09-19 13:12:39Z remko $
 #
 # Locate gdal
 #
@@ -135,5 +134,3 @@ find_package_handle_standard_args (GDAL DEFAULT_MSG GDAL_LIBRARY GDAL_INCLUDE_DI
 
 set (GDAL_LIBRARIES ${GDAL_LIBRARY})
 set (GDAL_INCLUDE_DIRS ${GDAL_INCLUDE_DIR})
-
-# vim: textwidth=78 noexpandtab tabstop=2 softtabstop=2 shiftwidth=2
