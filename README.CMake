@@ -1,11 +1,6 @@
-////
-$Id$
+Copyright (c) 1991-2024 by the GMT Team. See LICENSE.TXT file for copying and redistribution conditions.
 
-Copyright (c) 1991-2017 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis
-and F. Wobbe. See LICENSE.TXT file for copying and redistribution conditions.
-
-Contact info: gmt.soest.hawaii.edu
-////
+Contact info: www.generic-mapping-tools.org
 
 CMake User Guide
 ================
@@ -24,7 +19,7 @@ Quick start:
 Checkout the GMT extension template from its subversion repository;
 here we call the directory "custom":
 
-  $ svn co svn://gmtserver.soest.hawaii.edu/gmtextension custom
+  $ git@github.com:GenericMappingTools/custom-supplements.git custom
   $ cd custom
   $ cp cmake/ConfigUserTemplate.cmake cmake/ConfigUser.cmake
 
