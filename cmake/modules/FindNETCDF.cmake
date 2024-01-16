@@ -1,5 +1,4 @@
 #
-# $Id: FindNETCDF.cmake 14889 2015-09-19 13:12:39Z remko $
 #
 # Locate netcdf
 #
@@ -140,5 +139,3 @@ find_package_handle_standard_args (NETCDF
 set (NETCDF_LIBRARIES ${NETCDF_LIBRARY})
 set (NETCDF_INCLUDE_DIRS ${NETCDF_INCLUDE_DIR})
 string (REPLACE "-DNDEBUG" "" NETCDF_DEFINITIONS "${_netcdf_cflags_other}")
-
-# vim: textwidth=78 noexpandtab tabstop=2 softtabstop=2 shiftwidth=2

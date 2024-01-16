@@ -35,14 +35,10 @@
 #define THIS_MODULE_NEEDS		"JR"
 #define THIS_MODULE_OPTIONS		"->BKOPRUVXYcnptxy"
 
-#include "custom_version.h"	/* Must include this to use Custom_version */
-
 #define MAP_BAR_GAP	"36p"	/* Offset color bar 36 points below map */
 #define MAP_BAR_HEIGHT	"8p"	/* Height of color bar, if used */
 #define MAP_OFFSET	"100p"	/* Start map 100p from paper edge when colorbar is requested */
 #define TOPO_INC	500.0	/* Build cpt in steps of 500 meters */
-
-EXTERN_MSC int GMT_gmtmercmap (void *API, int mode, void *args);
 
 enum enum_script {BASH_MODE = 0,	/* Write Bash script */
 	CSH_MODE,				/* Write C-shell script */
@@ -159,7 +155,7 @@ static int parse (void *API, struct GMTMERCMAP_CTRL *Ctrl, struct GMT_OPTION *op
 				break;
 			case 'W':	/* Map width */
 				Ctrl->W.active = 1;
-				GMT_Get_Value (API, opt->arg, &Ctrl->W.width);
+				GMT_Get_Values (API, opt->arg, &Ctrl->W.width, 1);
 				break;
 			case 'S':	/* Draw scale beneath map */
 				Ctrl->S.active = 1;
@@ -208,15 +204,15 @@ void place_var (int mode, char *name, unsigned int end)
 #define bailout(code) {M_free_options (mode); return (code);}
 #define Return(code) {Free_Ctrl (Ctrl); bailout (code);}
 
-int GMT_gmtmercmap (void *API, int mode, void *args) {
+EXTERN_MSC int GMT_gmtmercmap (void *API, int mode, void *args) {
 	int error, min;
 	unsigned int B_active, K_active, O_active, P_active, X_active, Y_active;
 	unsigned int length_unit = 0;	/* cm */
 	
 	double area, z, z_min, z_max, wesn[4];
 	
-	char file[256], z_file[GMT_STR16], i_file[GMT_STR16];
-	char cmd[BUFSIZ], c_file[GMT_STR16], t_file[GMT_STR16], def_unit[16];
+	char file[256], z_file[GMT_VF_LEN], i_file[GMT_VF_LEN];
+	char cmd[BUFSIZ], c_file[GMT_VF_LEN], t_file[GMT_VF_LEN], def_unit[16];
 	static char unit[3] = "cip";
 
 	struct GMT_GRID *G = NULL, *I = NULL;

@@ -21,7 +21,7 @@
  * Version:	5 API
  *
  *  Brief synopsis: gmtparser tests API conversions, common settings,
- *  and parameters via GMT_Get_Value, GMT_Get_Default, GMT_Get_Common
+ *  and parameters via GMT_Get_Values, GMT_Get_Default, GMT_Get_Common
  *
  */
 
@@ -35,10 +35,7 @@
 #define THIS_MODULE_NEEDS		""
 #define THIS_MODULE_OPTIONS		"-BIJKOPRUVXYadefghinorst"	/* All the GMT common options */
 
-#include "custom_version.h"	/* Must include this to use Custom_version */
 #include <string.h>
-
-EXTERN_MSC int GMT_gmtparser (void *API, int mode, void *args);
 
 static int usage (void *API, int level) {
 	/* Specifies the full usage message from the program when no argument are given */
@@ -76,7 +73,7 @@ static void report (char *name, int count, double par[]) {
 #define Free_Options {if (GMT_Destroy_Options (API, &options) != GMT_NOERROR) return (EXIT_FAILURE);}
 #define Return(code) {Free_Options; return (code);}
 
-int GMT_gmtparser (void *API, int mode, void *args) {
+EXTERN_MSC int GMT_gmtparser (void *API, int mode, void *args) {
 	int ret, k;
 	double value[100];
 	char input[BUFSIZ], parameter[BUFSIZ], *commons = THIS_MODULE_OPTIONS, string[2] = {0, 0};
@@ -97,7 +94,7 @@ int GMT_gmtparser (void *API, int mode, void *args) {
 	GMT_Message (API, GMT_TIME_CLOCK, "Enter various lengths, distances, coordinates, either one-by-one or comma/slash separated.  End with - (a single hyphen):\n");
 	while (scanf ("%s", input) == 1 && input[0]) {		/* As long as user provides input... */
 		if (!strcmp (input, "-")) break;		/* OK, the end signal */
-		ret = GMT_Get_Value (API, input, value);	/* Convert one or more strings to doubles */
+		ret = GMT_Get_Values (API, input, value, 10);	/* Convert one or more strings to doubles */
 		report (input, ret, value);			/* Report them as decimal values */
 	}
 	

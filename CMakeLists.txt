@@ -1,7 +1,5 @@
 #
-#	$Id: CMakeLists.txt 11803 2013-06-24 23:06:22Z pwessel $
-#
-#	Copyright (c) 1991-2017 by P. Wessel, W. H. F. Smith, R. Scharroo, J. Luis, and F. Wobbe
+#	Copyright (c) 1991-2020 by the GMT Team (https://www.generic-mapping-tools.org/team.html)
 #	See LICENSE.TXT file for copying and redistribution conditions.
 #
 #	This program is free software; you can redistribute it and/or modify
@@ -13,10 +11,8 @@
 #	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #	GNU Lesser General Public License for more details.
 #
-#	Contact info: gmt.soest.hawaii.edu
+#	Contact info: www.generic-mapping-tools.org
 #-------------------------------------------------------------------------------
-#
-# To modify the cmake process: Edit your cmake/ConfigUser.cmake file
 #
 # To build out-of-source do (for example):
 #
@@ -26,14 +22,10 @@
 #
 # CMAKE_BUILD_TYPE can be: empty, Debug, Release, RelWithDebInfo or MinSizeRel
 #
-# cmake creates a new file cmake/ConfigUser.cmake if it does not already
-# exist. You can configure additional options there.
-#
 
-## Section 0: Define project name. Change this to what your plugin should be named.
+## Define project name. Change this to what your plugin should be named.
 project (custom)
 
-#------------------------------------------------------------------------
 # Make sure the user doesn't play dirty with symlinks
 get_filename_component (srcdir "${CMAKE_SOURCE_DIR}" REALPATH)
 get_filename_component (bindir "${CMAKE_BINARY_DIR}" REALPATH)
@@ -54,16 +46,14 @@ cmake_minimum_required (VERSION 2.8.5)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules/"
 	CACHE INTERNAL "Location of our custom CMake modules." FORCE)
 
-# Include configuration options (default options and options overridden by user).
-include (ConfigCMake)
-
-# Find UNIX commands
-include (FindUnixCommands)
-
 # Add subdirectories
 add_subdirectory (src)
-get_property(GMT_CUSTOM_LIB_PATH TARGET customlib PROPERTY LOCATION)
-GET_FILENAME_COMPONENT (GMT_CUSTOM_LIB_NAME ${GMT_CUSTOM_LIB_PATH} NAME)
+
+# Get name of the custom supplemental library
+get_directory_property (_suppl_lib_name DIRECTORY "src" DEFINITION "SUPPL_LIB_NAME")
+get_target_property (_name ${_suppl_lib_name} OUTPUT_NAME)
+get_target_property (_prefix ${_suppl_lib_name} PREFIX)
+set (GMT_CUSTOM_LIB_NAME ${_prefix}${_name}${CMAKE_SHARED_MODULE_SUFFIX})
 
 # Configuration done
 message(
@@ -76,5 +66,3 @@ message(
 	"*  CUSTOM library          : ${GMT_CUSTOM_LIB_NAME}\n"
 	"*  Installing CUSTOM in    : ${CMAKE_INSTALL_PREFIX}\n"
 	"*  CUSTOM_SHARE_PATH       : ${CMAKE_INSTALL_PREFIX}/${CUSTOM_SHARE_PATH}")
-
-# vim: textwidth=78 noexpandtab tabstop=2 softtabstop=2 shiftwidth=2
